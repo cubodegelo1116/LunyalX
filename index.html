@@ -77,6 +77,7 @@
         background: rgba(0,0,0,0.3);
         padding: 20px;
         border-radius: 10px;
+        display: none;
     }
 
     .plans {
@@ -126,6 +127,7 @@
     <nav>
         <button class="tab-btn active" data-tab="home">Home</button>
         <button class="tab-btn" data-tab="tos">TOS</button>
+        <button class="tab-btn" data-tab="plans">View Plans</button>
         <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Discord</button>
     </nav>
 </header>
@@ -133,21 +135,11 @@
 <main>
     <h1>Lunyal X Serverside</h1>
 
-    <div class="content" id="home">
-        <p>Bem-vindo ao LunyalX Serverside! Aqui você pode acessar os planos disponíveis.</p>
-        <div class="plans">
-            <div class="plan">
-                <h3>Free</h3>
-                <p>Acesso via Discord e whitelist.</p>
-            </div>
-            <div class="plan">
-                <h3>Standard</h3>
-                <p>Em desenvolvimento.</p>
-            </div>
-        </div>
+    <div class="content" id="home" style="display:block;">
+        <p>Bem-vindo ao LunyalX Serverside! Aqui você pode acessar os planos disponíveis e ver as regras de uso.</p>
     </div>
 
-    <div class="content" id="tos" style="display:none;">
+    <div class="content" id="tos">
         <h2>Terms of Service</h2>
         <p>
             Terms of Service for LunyalX Serversid/LXSS/LXYSS (Free Plan):<br>
@@ -164,6 +156,20 @@
             Teleporting players with score >10/20 = 2 Days Blacklisted + 1 Warn.<br>
             Still teleporting with score >10/20 = 10 Days Blacklisted.
         </p>
+    </div>
+
+    <div class="content" id="plans">
+        <h2>Planos Disponíveis</h2>
+        <div class="plans">
+            <div class="plan">
+                <h3>Free</h3>
+                <p>Acesso via Discord e whitelist.</p>
+            </div>
+            <div class="plan">
+                <h3>Standard</h3>
+                <p>Em desenvolvimento.</p>
+            </div>
+        </div>
     </div>
 
 </main>
