@@ -8,7 +8,7 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
     font-family: Arial, sans-serif;
-    color: #fff;
+    color:#fff;
     background: linear-gradient(135deg, rgb(60,140,255), rgb(0,0,20));
     min-height: 100vh;
     display: flex;
@@ -17,67 +17,87 @@ body {
     transition: background 0.5s ease;
 }
 header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 30px;
     background: rgba(0,0,0,0.3);
-    border-bottom: 2px solid rgba(255,255,255,0.2);
+    border-bottom:2px solid rgba(255,255,255,0.2);
 }
-.logo img { width:48px; height:48px; border-radius:12px; box-shadow:0 0 8px rgba(0,0,0,0.8);}
-nav { display:flex; align-items:center; gap:20px; }
+.logo img {
+    width:48px;
+    height:48px;
+    border-radius:12px;
+    box-shadow:0 0 8px rgba(0,0,0,0.8);
+}
+nav {
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
 nav button {
-    background:none; border:none; color:#fff; padding:8px 12px;
-    font-size:1rem; cursor:pointer; position:relative; transition: color 0.3s;
+    background:none;
+    border:none;
+    color:#fff;
+    padding:8px 12px;
+    font-size:1rem;
+    cursor:pointer;
+    position:relative;
+    transition: color 0.3s;
 }
 nav button:hover { color:#7fffd4; }
 nav button::after {
-    content:""; position:absolute; width:0%; height:2px; background:#7fffd4;
-    left:0; bottom:-3px; transition:width 0.3s;
+    content:"";
+    position:absolute;
+    width:0%;
+    height:2px;
+    background:#7fffd4;
+    left:0;
+    bottom:-3px;
+    transition:width 0.3s;
 }
 nav button:hover::after { width:100%; }
+
 main {
-    flex:1; width:100%; max-width:1100px; padding:40px 20px;
+    flex:1;
+    width:100%;
+    max-width:1100px;
+    padding:40px 20px;
 }
 .content {
-    display:none; background: rgba(0,0,0,0.4);
-    padding:25px; border-radius:12px; margin-top:20px;
+    display:none;
+    background: rgba(0,0,0,0.4);
+    padding:25px;
+    border-radius:12px;
+    margin-top:20px;
     animation:fade 0.4s ease;
 }
 .content.active { display:block; }
-@keyframes fade { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-.login-box, .faq-box { margin-top:20px; padding:15px; background: rgba(255,255,255,0.1); border-radius:10px;}
-input { padding:8px; width:220px; border-radius:5px; border:none; margin-right:10px;}
-button.action-btn {
-    background: rgba(127,255,212,0.2);
-    border:1px solid #7fffd4;
-    border-radius:6px;
-    padding:8px 15px;
-    color:#fff;
-    cursor:pointer;
-    transition:0.3s;
-}
-button.action-btn:hover { background: rgba(127,255,212,0.35);}
-.plan { background: rgba(255,255,255,0.1); padding:20px; border-radius:10px; margin-top:10px;}
-.faq-item { margin-bottom:10px; cursor:pointer; border-bottom:1px solid rgba(255,255,255,0.2);}
-.faq-item h3 { padding:8px; }
-.faq-answer { display:none; padding:8px 0 8px 10px; color:#b0f0e6; }
-.avatar { width:36px; height:36px; border-radius:50%; margin-left:10px; }
+@keyframes fade { from {opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+.login-box { margin-top:20px; padding:15px; background: rgba(255,255,255,0.1); border-radius:10px; }
+input { padding:8px; width:220px; border-radius:5px; border:none; margin-right:10px; }
+.plan { background: rgba(255,255,255,0.1); padding:20px; border-radius:10px; margin-top:10px; }
+.faq-item { margin-top:10px; cursor:pointer; }
+.faq-answer { display:none; margin-top:5px; padding-left:10px; color:#7fffd4; }
+.user-avatar { width:36px; height:36px; border-radius:50%; margin-left:10px; vertical-align:middle; }
 </style>
 </head>
 <body>
 
 <header>
-    <div class="logo"><img src="https://cdn.discordapp.com/icons/1437834972496138362/bd33d3b2579cfbd7c0cd2bf0a109e195.webp?size=64" alt="LunyalX Logo"></div>
+    <div class="logo">
+        <img src="https://cdn.discordapp.com/icons/1437834972496138362/bd33d3b2579cfbd7c0cd2bf0a109e195.webp?size=64" alt="LunyalX Logo">
+    </div>
     <nav>
         <button class="tab-btn active" data-tab="home">Home</button>
         <button class="tab-btn" data-tab="tos">TOS</button>
         <button class="tab-btn" data-tab="plans">Plans</button>
         <button class="tab-btn" data-tab="dashboard">Dashboard</button>
         <button class="tab-btn" data-tab="faq">FAQ</button>
-        <button id="devPanelBtn" style="display:none;" class="tab-btn" data-tab="devpanel">Dev Panel</button>
         <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Discord</button>
+        <button id="dev-panel-btn" style="display:none;" class="tab-btn" data-tab="devpanel">Dev Panel</button>
     </nav>
 </header>
 
@@ -93,10 +113,21 @@ button.action-btn:hover { background: rgba(127,255,212,0.35);}
         <h1>TOS</h1>
         <hr><br>
         <h2>Rules</h2>
-        <p>Do not use HappyHub or k00pguis.<br>No mass kick/ban.<br>Abuse is allowed in free & standard plan.<br>Shutdown game after destruction.<br>TP only allowed if 10+ players.</p>
+        <p>
+            Do not use HappyHub or k00pguis.<br>
+            No mass kick/ban.<br>
+            Abuse is allowed in free & standard plan.<br>
+            Shutdown game after destruction.<br>
+            TP only allowed if 10+ players.
+        </p>
         <hr><br>
         <h2>Blacklist Punishments</h2>
-        <p>HappyHub/k00pguis = 1 day blacklist.<br>Repeated = 7 days blacklist.<br>TP >10 score = 2 days blacklist.<br>Repeated = 10 days blacklist.</p>
+        <p>
+            HappyHub/k00pguis = 1 day blacklist.<br>
+            Repeated = 7 days blacklist.<br>
+            TP >10 score = 2 days blacklist.<br>
+            Repeated = 10 days blacklist.
+        </p>
     </div>
 
     <!-- PLANS -->
@@ -105,7 +136,7 @@ button.action-btn:hover { background: rgba(127,255,212,0.35);}
         <div class="plan">
             <h2>Free Plan</h2>
             <p>Access via Discord and whitelist.</p>
-            <button class="action-btn" onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Join Discord</button>
+            <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Join Discord</button>
         </div>
         <div class="plan">
             <h2>Standard Plan</h2>
@@ -115,14 +146,30 @@ button.action-btn:hover { background: rgba(127,255,212,0.35);}
 
     <!-- DASHBOARD -->
     <div class="content" id="dashboard">
-        <h1>Dashboard</h1>
+        <h1>Dashboard <img id="user-avatar" class="user-avatar" src="" alt="" style="display:none;"></h1>
         <div id="userinfo"></div>
-        <div class="login-box">
+        <div class="login-box" id="login-box">
             <h3>Login</h3>
             <input id="username" placeholder="Roblox Username">
-            <button class="action-btn" onclick="login()">Login</button>
+            <button onclick="login()">Login</button>
             <p id="loginmsg"></p>
-            <img id="avatar" class="avatar" src="" style="display:none;">
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="content" id="faq">
+        <h1>FAQ</h1>
+        <div class="faq-item">What is Lunyal X?
+            <div class="faq-answer">Lunyal X is a Roblox serverside tool for advanced users.</div>
+        </div>
+        <div class="faq-item">Is it trustworthy?
+            <div class="faq-answer">Yes, Lunyal X is safe when used according to the rules.</div>
+        </div>
+        <div class="faq-item">How do I buy?
+            <div class="faq-answer">Currently only via Robux, within Roblox.</div>
+        </div>
+        <div class="faq-item">Payment methods?
+            <div class="faq-answer">Robux only.</div>
         </div>
     </div>
 
@@ -131,27 +178,17 @@ button.action-btn:hover { background: rgba(127,255,212,0.35);}
         <h1>Dev Panel</h1>
         <p>Enter dev-key:</p>
         <input id="devkey" placeholder="dev-XXXXX-XXXXX-XXXXX">
-        <button class="action-btn" onclick="checkDev()">Access Panel</button>
+        <button onclick="checkDev()">Access Panel</button>
         <p id="devmsg"></p>
-    </div>
-
-    <!-- FAQ -->
-    <div class="content" id="faq">
-        <h1>FAQ</h1>
-        <div class="faq-box">
-            <div class="faq-item"><h3>What is Lunyal X?</h3><div class="faq-answer">Lunyal X is a Roblox server-side exploit platform.</div></div>
-            <div class="faq-item"><h3>Is it reliable?</h3><div class="faq-answer">Yes, it is fully maintained by our dev team.</div></div>
-            <div class="faq-item"><h3>How do I buy?</h3><div class="faq-answer">Currently, only Free Plan is available via Discord whitelist.</div></div>
-            <div class="faq-item"><h3>Payment methods?</h3><div class="faq-answer">Robux only.</div></div>
-        </div>
     </div>
 </main>
 
 <script>
 const tabs = document.querySelectorAll('.tab-btn');
 const sections = document.querySelectorAll('.content');
-tabs.forEach(btn => {
-    btn.addEventListener("click", () => {
+
+tabs.forEach(btn=>{
+    btn.addEventListener("click",()=>{
         tabs.forEach(b=>b.classList.remove("active"));
         sections.forEach(s=>s.classList.remove("active"));
         btn.classList.add("active");
@@ -159,59 +196,70 @@ tabs.forEach(btn => {
     });
 });
 
-const devNicks = ["enzopiticopileko", "RC7REMAKERYTT"];
+// FAQ toggle
+document.querySelectorAll('.faq-item').forEach(item=>{
+    item.addEventListener("click",()=>{
+        const answer = item.querySelector('.faq-answer');
+        answer.style.display = (answer.style.display==="block")?"none":"block";
+    });
+});
+
+// DEV SETTINGS
+const devNicks = ["enzopiticopileko","RC7REMAKERYTT"];
 const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7","dev-V8LQ2-9DMA2-1KXQ0"];
 
 async function login() {
     const user = document.getElementById("username").value.trim();
     const msg = document.getElementById("loginmsg");
-    const avatarImg = document.getElementById("avatar");
+    const avatar = document.getElementById("user-avatar");
+    const loginBox = document.getElementById("login-box");
+    const devBtn = document.getElementById("dev-panel-btn");
 
     if(!user){ msg.innerText="Enter a username."; return; }
 
     msg.innerText="Checking whitelist...";
-    avatarImg.style.display="none";
 
-    try{
-        const apiUrl = window.location.origin + `/api/checkgroup?user=${user}`;
-        const res = await fetch(apiUrl);
+    try {
+        const res = await fetch(`/api/checkgroup?user=${user}`);
         const data = await res.json();
 
         if(data.error){ msg.innerText="User not found."; return; }
 
-        const whitelisted = data.inGroup === true;
-        const isDev = devNicks.includes(user);
+        const whitelisted = data.inGroup===true;
 
-        document.getElementById("userinfo").innerHTML = `<h2>${user}</h2><p>Whitelist: ${whitelisted?"Free Plan":"None"}</p>`;
-        avatarImg.src = `https://www.roblox.com/headshot-thumbnail/image?userId=${data.userId}&width=48&height=48&format=png`;
-        avatarImg.style.display="inline-block";
+        // avatar da skin do roblox
+        avatar.src = `https://www.roblox.com/headshot-thumbnail/image?userId=${data.userId}&width=48&height=48&format=png`;
+        avatar.style.display="inline";
+
+        document.getElementById("userinfo").innerHTML = `<h2>User: ${user}</h2>
+        <p>Whitelist: ${whitelisted ? "Free Plan" : "None"}</p>`;
+
+        // Se o nick for dev, habilita input dev key e botão dev panel
+        if(devNicks.includes(user)){
+            devBtn.style.display="inline-block";
+            loginBox.style.display="block";
+        } else {
+            devBtn.style.display="none";
+            loginBox.style.display="none";
+        }
 
         msg.innerText="Login successful!";
-
-        // Mostrar botão dev panel só se for dev
-        const devBtn = document.getElementById("devPanelBtn");
-        if(isDev) devBtn.style.display="inline-block"; else devBtn.style.display="none";
-
-    }catch(err){
+    } catch(err){
         msg.innerText="Error connecting to API.";
+        console.error(err);
     }
 }
 
-function checkDev() {
+function checkDev(){
     const key = document.getElementById("devkey").value.trim();
     const msg = document.getElementById("devmsg");
+
     if(validDevKeys.includes(key)){
         msg.innerText="Access granted. Dev Panel unlocked.";
-    } else msg.innerText="Invalid dev key.";
+    } else {
+        msg.innerText="Invalid dev key.";
+    }
 }
-
-// FAQ toggle
-document.querySelectorAll('.faq-item').forEach(item=>{
-    item.addEventListener('click',()=>{
-        const ans = item.querySelector('.faq-answer');
-        ans.style.display = ans.style.display === 'block' ? 'none':'block';
-    });
-});
 </script>
 </body>
 </html>
