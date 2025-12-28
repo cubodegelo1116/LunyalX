@@ -6,16 +6,12 @@
 <title>Lunyal X Server Side</title>
 
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
         font-family: Arial, sans-serif;
         color: #fff;
-        background: linear-gradient(135deg, rgb(60,140,255), rgb(0,0,20));
+        background: linear-gradient(135deg, rgb(40,90,200), rgb(0,0,20));
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -40,12 +36,6 @@
         box-shadow: 0 0 8px rgba(0,0,0,0.8);
     }
 
-    nav {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
     nav button {
         background: rgba(255,255,255,0.1);
         border: 1px solid #fff;
@@ -53,11 +43,10 @@
         padding: 8px 15px;
         border-radius: 5px;
         cursor: pointer;
-        transition: background 0.3s;
-        font-size: 0.9rem;
+        transition: 0.3s;
     }
 
-    nav button.active {
+    nav button:hover {
         background: rgba(255,255,255,0.3);
     }
 
@@ -74,18 +63,28 @@
         width: 200px;
         display: flex;
         flex-direction: column;
-        gap: 15px;
+        gap: 10px;
     }
 
     .sidebar button {
         width: 100%;
         padding: 10px;
         text-align: left;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .sidebar button.active {
+        background: rgba(255,255,255,0.25);
     }
 
     .content {
         flex: 1;
-        background: rgba(0,0,0,0.4);
+        background: rgba(0,0,0,0.45);
         padding: 25px;
         border-radius: 12px;
         display: none;
@@ -97,15 +96,22 @@
     }
 
     @keyframes fade {
-        from { opacity: 0; transform: translateY(8px); }
+        from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
     }
 
-    .login-box {
-        margin-top: 20px;
-        padding: 15px;
+    .plan {
         background: rgba(255,255,255,0.1);
+        padding: 20px;
+        margin-top: 15px;
         border-radius: 10px;
+    }
+
+    .login-box {
+        background: rgba(255,255,255,0.1);
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
     }
 
     input {
@@ -115,14 +121,6 @@
         border: none;
         margin-right: 10px;
     }
-
-    .plan {
-        background: rgba(255,255,255,0.1);
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 10px;
-    }
-
 </style>
 </head>
 <body>
@@ -149,38 +147,42 @@
 
     <div class="content active" id="home">
         <h1>Lunyal X Server Side</h1>
-        <p>Welcome to Lunyal X Server Side, the best serverside you can find!</p>
+        <p>Welcome to Lunyal X Server Side — the best serverside you can find!</p>
     </div>
 
     <div class="content" id="tos">
         <h1>TOS</h1>
         <hr><br>
+
         <h2>Rules</h2>
-        <p>
-            Do not use HappyHub or k00pguis.<br>
-            No mass kick/ban.<br>
-            Abuse is allowed in free & standard plan.<br>
-            Shutdown game after destruction.<br>
-            TP only allowed if 10+ players.
-        </p>
-        <hr><br>
+        <ul>
+            <li>Do not use HappyHub or k00pguis.</li>
+            <li>No mass kick/ban.</li>
+            <li>Abuse allowed in Free & Standard plan.</li>
+            <li>Shutdown game after destruction.</li>
+            <li>TP allowed only if 10+ players.</li>
+        </ul>
+
+        <br><hr><br>
 
         <h2>Blacklist Punishments</h2>
-        <p>
-            HappyHub/k00pguis = 1 day blacklist.<br>
-            Repeated = 7 days blacklist.<br>
-            TP >10 score = 2 days blacklist.<br>
-            Repeated = 10 days blacklist.
-        </p>
+        <ul>
+            <li>HappyHub/k00pguis = 1 day blacklist.</li>
+            <li>Repeated = 7 days blacklist.</li>
+            <li>TP >10 score = 2 days blacklist.</li>
+            <li>Repeated = 10 days blacklist.</li>
+        </ul>
     </div>
 
     <div class="content" id="plans">
         <h1>Plans</h1>
+
         <div class="plan">
             <h2>Free Plan</h2>
-            <p>Access via Discord and whitelist.</p>
+            <p>Access via Discord whitelist.</p>
             <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Join Discord</button>
         </div>
+
         <div class="plan">
             <h2>Standard Plan</h2>
             <p>Coming soon.</p>
@@ -206,9 +208,7 @@
         <p>Enter dev-key:</p>
         <input id="devkey" placeholder="dev-XXXXX-XXXXX-XXXXX">
         <button onclick="checkDev()">Access Panel</button>
-
         <p id="devmsg"></p>
-
     </div>
 
 </main>
@@ -227,30 +227,32 @@ tabs.forEach(btn => {
     });
 });
 
-// DEV NICKS BLOQUEADOS PARA LOGIN
 const devNicks = ["enzopiticopileko", "RC7REMAKERYTT"];
-
-// DEV KEYS
-const validDevKeys = [
-    "dev-02JH9-KQ3L2-HF9A7",
-    "dev-V8LQ2-9DMA2-1KXQ0"
-];
+const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7","dev-V8LQ2-9DMA2-1KXQ0"];
 
 async function login() {
     const user = document.getElementById("username").value.trim();
     const msg = document.getElementById("loginmsg");
 
-    if (!user) return msg.innerText = "Enter a username.";
-
-    if (devNicks.includes(user)) {
-        msg.innerText = "This username is protected.";
+    if (!user) {
+        msg.innerText = "Enter a username.";
         return;
     }
 
     msg.innerText = "Checking whitelist...";
 
-    const res = await fetch(`/api/checkgroup?user=${user}`);
+    const res = await fetch("/api/checkgroup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: user })
+    });
+
     const data = await res.json();
+
+    if (data.devBlocked) {
+        msg.innerText = "This username is protected. Use DEV KEY.";
+        return;
+    }
 
     if (data.error) {
         msg.innerText = "User not found.";
