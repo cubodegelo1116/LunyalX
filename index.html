@@ -96,7 +96,26 @@
 
     .content.active {
         opacity: 1;
-        max-height: 1000px; /* suficiente para caber o conteúdo */
+        max-height: 2000px; /* suficiente para todo conteúdo */
+    }
+
+    .content h1 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        border-bottom: 2px solid rgba(255,255,255,0.3);
+        padding-bottom: 10px;
+    }
+
+    .content h2 {
+        font-size: 1.2rem;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+    .content hr {
+        border: 0;
+        border-top: 1px solid rgba(255,255,255,0.3);
+        margin: 15px 0;
     }
 
     .plans {
@@ -113,6 +132,8 @@
         border-radius: 10px;
         min-width: 200px;
         transition: background 0.3s;
+        cursor: pointer;
+        text-align: center;
     }
 
     .plan:hover {
@@ -145,7 +166,7 @@
     </div>
     <nav>
         <button class="tab-btn active" data-tab="home">Home</button>
-        <button class="tab-btn" data-tab="tos">Terms of Service</button>
+        <button class="tab-btn" data-tab="tos">TOS</button>
         <button class="tab-btn" data-tab="plans">View Plans</button>
         <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Discord</button>
     </nav>
@@ -159,17 +180,19 @@
     </div>
 
     <div class="content" id="tos">
-        <h2>Terms of Service</h2>
+        <h1>TOS</h1>
+        <hr>
+        <h2>Terms of Service for LunyalX Server Side (Free Plan)</h2>
         <p>
-            Terms of Service for LunyalX Server Side (Free Plan):<br>
-            ---------------------------------------------------------<br>
             Do not use HappyHub, K00pguis of all versions.<br>
             No mass banning/kicking of players, it may cause fewer active players.<br>
             Abuses are allowed in the free plan and standard plan.<br>
             Always shut down the game after destroying it.<br>
             Teleporting players is allowed only if there are more than 10/20 players.<br>
-            ---------------------------------------------------------<br>
-            <b>Blacklist Days If You Break The Rules:</b><br>
+        </p>
+        <hr>
+        <h2>Blacklist Days If You Break The Rules</h2>
+        <p>
             Using HappyHub SS V2 or k00pguis = 1 Day Blacklisted + 1 Warn.<br>
             Still using HappyHub SS V2 or k00pguis = 7 Days Blacklisted.<br>
             Teleporting players with score >10/20 = 2 Days Blacklisted + 1 Warn.<br>
@@ -180,7 +203,7 @@
     <div class="content" id="plans">
         <h2>Available Plans</h2>
         <div class="plans">
-            <div class="plan">
+            <div class="plan" onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">
                 <h3>Free</h3>
                 <p>Access via Discord and whitelist.</p>
             </div>
