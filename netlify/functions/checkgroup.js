@@ -1,44 +1,49 @@
-const fetch = require("node-fetch");
+export async function handler(event, context) {
+    const user = event.queryStringParameters?.user;
 
-exports.handler = async function(event, context) {
-  if (event.httpMethod !== "GET") {
-    return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
-  }
-
-  const user = event.queryStringParameters.user;
-
-  if (!user) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Missing user" }) };
-  }
-
-  const devNicks = ["enzopiticopileko", "RC7REMAKERYTT"];
-
-  try {
-    const response = await fetch("https://users.roblox.com/v1/usernames/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ usernames: [user] })
-    });
-
-    const data = await response.json();
-    if (!data.data || data.data.length === 0) {
-      return { statusCode: 404, body: JSON.stringify({ error: "User not found" }) };
+    if (!user) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ error: "Missing user parameter" })
+        };
     }
 
-    const userId = data.data[0].id;
+    try {
+        // 1) pegar Roblox userId
+        const usernameRes = await fetch("https://users.roblox.com/v1/usernames/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ usernames: [user] })
+        });
+        const usernameData = await usernameRes.json();
 
-    const groupCheck = await fetch(`https://groups.roblox.com/v1/users/${userId}/groups/roles`);
-    const groups = await groupCheck.json();
+        if (!usernameData.data || usernameData.data.length === 0) {
+            return {
+                statusCode: 404,
+                body: JSON.stringify({ error: "User not found" })
+            };
+        }
 
-    const inGroup = groups.data?.some(g => g.group?.id === 34372369) || false;
-    const isDev = devNicks.includes(user);
+        const userId = usernameData.data[0].id;
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ userId, inGroup, isDev })
-    };
+        // 2) checar grupo
+        const groupRes = await fetch(`https://groups.roblox.com/v1/users/${userId}/groups/roles`);
+        const groupData = await groupRes.json();
 
-  } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: "Internal server error", details: err }) };
-  }
-};
+        const inGroup = groupData.data?.some(g => g.group?.id === 34372369) || false;
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ userId, inGroup })
+        };
+
+    } catch (err) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ 
+                error: "Internal server error",
+                message: err.message 
+            })
+        };
+    }
+}
