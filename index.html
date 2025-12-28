@@ -1,322 +1,259 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lunyal X Server Side</title>
-
-<link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
-
 <style>
-    *{
-        margin:0;
-        padding:0;
-        box-sizing:border-box;
-        font-family:Arial, sans-serif;
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+        font-family: Arial, sans-serif;
+        color: #fff;
+        background: linear-gradient(135deg, rgb(60,140,255), rgb(0,0,20));
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: background 0.5s ease;
     }
-
-    body{
-        background:#0a0a0f;
-        color:white;
-        height:100vh;
-        display:flex;
+    header {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 30px;
+        background: rgba(0,0,0,0.3);
+        border-bottom: 2px solid rgba(255,255,255,0.2);
     }
-
-    /* SIDEBAR */
-    .sidebar{
-        width:230px;
-        background:#0d0d14;
-        border-right:1px solid #161621;
-        padding:25px 20px;
-        display:flex;
-        flex-direction:column;
-        gap:15px;
+    .logo img {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.8);
+        margin-left: 20px;
     }
-
-    .sidebar h1{
-        font-size:1.4rem;
-        margin-bottom:10px;
-        text-align:center;
+    nav {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-right: 40px;
     }
-
-    .nav-btn{
-        display:flex;
-        align-items:center;
-        gap:10px;
-        padding:12px;
-        background:#10101a;
-        border:1px solid #1b1b28;
-        color:white;
-        border-radius:8px;
-        cursor:pointer;
-        transition:.3s;
+    nav button {
+        background: rgba(255,255,255,0.1);
+        border: 1px solid #fff;
+        color: #fff;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+        font-size: 0.9rem;
     }
-
-    .nav-btn:hover{
-        background:#1c1c2c;
+    nav button:hover { background: rgba(255,255,255,0.25); }
+    main {
+        flex: 1;
+        width: 100%;
+        max-width: 1100px;
+        display: flex;
+        gap: 40px;
+        padding: 40px;
     }
-
-    .nav-btn.active{
-        background:#27273d;
-        border-color:#3f3f60;
+    .sidebar {
+        width: 200px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
     }
-
-    .nav-btn i{
-        font-size:20px;
+    .sidebar button {
+        width: 100%;
+        padding: 10px;
+        text-align: left;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid #fff;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
     }
-
-    /* HEADER */
-    header{
-        width:100%;
-        background:#0d0d14;
-        border-bottom:1px solid #161621;
-        padding:15px 25px;
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
+    .sidebar button:hover { background: rgba(255,255,255,0.2); }
+    .sidebar button.active { background: rgba(255,255,255,0.35); }
+    .content {
+        flex: 1;
+        background: rgba(0,0,0,0.55);
+        padding: 25px;
+        border-radius: 12px;
+        display: none;
+        animation: fade 0.4s ease;
     }
-
-    header img{
-        width:50px;
-        height:50px;
-        border-radius:10px;
+    .content.active { display: block; }
+    @keyframes fade { from {opacity:0; transform:translateY(8px);} to {opacity:1; transform:translateY(0);} }
+    .login-box {
+        margin-top: 20px;
+        padding: 15px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 10px;
     }
-
-    .discord-btn{
-        background:#5865F2;
-        color:white;
-        border:none;
-        padding:10px 18px;
-        border-radius:8px;
-        font-size:15px;
-        cursor:pointer;
-        transition:.3s;
+    input {
+        padding: 8px;
+        width: 220px;
+        border-radius: 5px;
+        border: none;
+        margin-right: 10px;
     }
-
-    .discord-btn:hover{
-        background:#4752c4;
-    }
-
-    /* CONTENT */
-    .content-area{
-        flex:1;
-        display:flex;
-        flex-direction:column;
-        height:100vh;
-    }
-
-    .page{
-        display:none;
-        padding:30px;
-        overflow-y:auto;
-        animation:fade .3s ease;
-    }
-
-    .page.active{
-        display:block;
-    }
-
-    @keyframes fade{
-        from{opacity:0; transform:translateY(10px);}
-        to{opacity:1; transform:translateY(0);}
-    }
-
-    /* BOX */
-    .box{
-        background:#10101a;
-        border:1px solid #222232;
-        padding:20px;
-        border-radius:10px;
-        margin-top:20px;
-    }
-
-    input{
-        background:#1a1a26;
-        border:1px solid #2a2a3a;
-        padding:10px;
-        color:white;
-        border-radius:6px;
-        width:250px;
-        outline:none;
-    }
-
-    button{
-        padding:10px 15px;
-        background:#27273d;
-        border:1px solid #3a3a55;
-        color:white;
-        border-radius:8px;
-        cursor:pointer;
-    }
-
-    button:hover{
-        background:#3a3a55;
+    .plan {
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 10px;
     }
 </style>
 </head>
 <body>
 
-<!-- LEFT MENU -->
-<div class="sidebar">
-    <h1>Lunyal X</h1>
-
-    <button class="nav-btn active" data-page="home"><i class="ri-home-4-line"></i> Home</button>
-    <button class="nav-btn" data-page="tos"><i class="ri-file-text-line"></i> TOS</button>
-    <button class="nav-btn" data-page="plans"><i class="ri-vip-diamond-line"></i> Planos</button>
-    <button class="nav-btn" data-page="dashboard"><i class="ri-dashboard-line"></i> Dashboard</button>
-    <button class="nav-btn" data-page="devpanel"><i class="ri-terminal-box-line"></i> Dev Panel</button>
-</div>
-
-<div class="content-area">
-
 <header>
-    <img src="https://cdn.discordapp.com/icons/1437834972496138362/bd33d3b2579cfbd7c0cd2bf0a109e195.webp?size=64">
-    <button class="discord-btn" onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Discord</button>
+    <div class="logo">
+        <img src="https://cdn.discordapp.com/icons/1437834972496138362/bd33d3b2579cfbd7c0cd2bf0a109e195.webp?size=64" alt="LunyalX Logo">
+    </div>
+    <nav>
+        <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Discord</button>
+    </nav>
 </header>
 
-<!-- HOME -->
-<div class="page active" id="home">
-    <h1>Bem-vindo ao Lunyal X SS</h1>
-    <p>A nova geração de serverside.</p>
-</div>
+<main>
+    <div class="sidebar">
+        <button class="tab-btn active" data-tab="home">Home</button>
+        <button class="tab-btn" data-tab="tos">TOS</button>
+        <button class="tab-btn" data-tab="plans">Plans</button>
+        <button class="tab-btn" data-tab="dashboard">Dashboard</button>
+        <button class="tab-btn" data-tab="devpanel">Dev Panel</button>
+    </div>
 
-<!-- TOS -->
-<div class="page" id="tos">
-    <h1>Termos de Uso</h1>
+    <!-- HOME -->
+    <div class="content active" id="home">
+        <h1>Lunyal X Server Side</h1>
+        <p>Welcome to Lunyal X Server Side, the best serverside you can find!</p>
+    </div>
 
-    <div class="box">
-        <h2>Regras</h2>
+    <!-- TOS -->
+    <div class="content" id="tos">
+        <h1>TOS</h1>
+        <hr><br>
+        <h2>Rules</h2>
         <p>
-            • Não usar HappyHub ou k00pguis.<br>
-            • Sem mass kick/ban.<br>
-            • Abuse permitido no Free & Standard.<br>
-            • Shutdown pós destruição.<br>
-            • TP só com 10+ players.
+            Do not use HappyHub or k00pguis.<br>
+            No mass kick/ban.<br>
+            Abuse is allowed in free & standard plan.<br>
+            Shutdown game after destruction.<br>
+            TP only allowed if 10+ players.
+        </p>
+        <hr><br>
+        <h2>Blacklist Punishments</h2>
+        <p>
+            HappyHub/k00pguis = 1 day blacklist.<br>
+            Repeated = 7 days blacklist.<br>
+            TP >10 score = 2 days blacklist.<br>
+            Repeated = 10 days blacklist.
         </p>
     </div>
 
-    <div class="box">
-        <h2>Punições</h2>
-        <p>
-            • HH/k00pguis = 1 dia BL.<br>
-            • Repetiu = 7 dias.<br>
-            • TP >10 score = 2 dias.<br>
-            • Repetiu = 10 dias.
-        </p>
-    </div>
-</div>
-
-<!-- PLANS -->
-<div class="page" id="plans">
-    <h1>Planos Disponíveis</h1>
-
-    <div class="box">
-        <h2>Free Plan</h2>
-        <p>Acesso via Discord e whitelist do grupo.</p>
-        <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Entrar no Discord</button>
+    <!-- PLANS -->
+    <div class="content" id="plans">
+        <h1>Plans</h1>
+        <div class="plan">
+            <h2>Free Plan</h2>
+            <p>Access via Discord and whitelist.</p>
+            <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Join Discord</button>
+        </div>
+        <div class="plan">
+            <h2>Standard Plan</h2>
+            <p>Coming soon.</p>
+        </div>
     </div>
 
-    <div class="box">
-        <h2>Standard</h2>
-        <p>Em breve.</p>
+    <!-- DASHBOARD -->
+    <div class="content" id="dashboard">
+        <h1>Dashboard</h1>
+        <div id="userinfo"></div>
+        <div class="login-box">
+            <h3>Login</h3>
+            <input id="username" placeholder="Roblox Username">
+            <button onclick="login()">Login</button>
+            <p id="loginmsg"></p>
+        </div>
     </div>
-</div>
 
-<!-- DASHBOARD -->
-<div class="page" id="dashboard">
-    <h1>Dashboard</h1>
-
-    <div id="userinfo"></div>
-
-    <div class="box">
-        <h3>Login</h3>
-        <input id="username" placeholder="Nick do Roblox">
-        <button onclick="login()">Logar</button>
-        <p id="loginmsg"></p>
-    </div>
-</div>
-
-<!-- DEV PANEL -->
-<div class="page" id="devpanel">
-    <h1>Dev Panel</h1>
-
-    <div class="box">
+    <!-- DEV PANEL -->
+    <div class="content" id="devpanel">
+        <h1>Dev Panel</h1>
+        <p>Enter dev-key:</p>
         <input id="devkey" placeholder="dev-XXXXX-XXXXX-XXXXX">
-        <button onclick="checkDev()">Entrar</button>
+        <button onclick="checkDev()">Access Panel</button>
         <p id="devmsg"></p>
     </div>
-</div>
-
-</div>
+</main>
 
 <script>
-const pages = document.querySelectorAll(".page");
-const buttons = document.querySelectorAll(".nav-btn");
+const tabs = document.querySelectorAll('.tab-btn');
+const sections = document.querySelectorAll('.content');
 
-buttons.forEach(btn => {
+tabs.forEach(btn => {
     btn.addEventListener("click", () => {
-        pages.forEach(p => p.classList.remove("active"));
-        buttons.forEach(b => b.classList.remove("active"));
-        document.getElementById(btn.dataset.page).classList.add("active");
+        tabs.forEach(b => b.classList.remove("active"));
+        sections.forEach(s => s.classList.remove("active"));
         btn.classList.add("active");
+        document.getElementById(btn.dataset.tab).classList.add("active");
     });
 });
 
-// DEV PROTEÇÃO
+// DEV NICKS BLOQUEADOS
 const devNicks = ["enzopiticopileko", "RC7REMAKERYTT"];
+// DEV KEYS
+const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
 
-const validDevKeys = [
-    "dev-02JH9-KQ3L2-HF9A7",
-    "dev-V8LQ2-9DMA2-1KXQ0"
-];
-
-async function login(){
+async function login() {
     const user = document.getElementById("username").value.trim();
     const msg = document.getElementById("loginmsg");
 
-    if(!user){
-        msg.innerText = "Digite um nick válido.";
+    if (!user) return msg.innerText = "Enter a username.";
+
+    if (devNicks.includes(user)) {
+        msg.innerText = "This username is protected.";
         return;
     }
 
-    if(devNicks.includes(user)){
-        msg.innerText = "Esse nick é protegido.";
-        return;
+    msg.innerText = "Checking whitelist...";
+
+    try {
+        const res = await fetch(`/api/checkgroup?user=${user}`);
+        const data = await res.json();
+
+        if (data.error) {
+            msg.innerText = "User not found.";
+            return;
+        }
+
+        const whitelisted = data.inGroup === true;
+
+        document.getElementById("userinfo").innerHTML = `
+            <h2>User: ${user}</h2>
+            <p>Whitelist: ${whitelisted ? "Free Plan" : "None"}</p>
+        `;
+
+        msg.innerText = "Login successful!";
+    } catch (err) {
+        msg.innerText = "Error connecting to API.";
     }
-
-    msg.innerText = "Checando whitelist...";
-
-    const req = await fetch(`/api/checkgroup?user=${user}`);
-    const data = await req.json();
-
-    if(data.error){
-        msg.innerText = "Usuário não encontrado.";
-        return;
-    }
-
-    const whitelisted = data.inGroup === true;
-
-    document.getElementById("userinfo").innerHTML = `
-        <div class='box'>
-            <h2>Usuário: ${user}</h2>
-            <p>Whitelist: ${whitelisted ? "Free Plan" : "Nenhuma"}</p>
-        </div>
-    `;
-
-    msg.innerText = "Logado com sucesso!";
 }
 
-function checkDev(){
+function checkDev() {
     const key = document.getElementById("devkey").value.trim();
     const msg = document.getElementById("devmsg");
 
-    if(validDevKeys.includes(key)){
-        msg.innerText = "Dev liberado ✓";
+    if (validDevKeys.includes(key)) {
+        msg.innerText = "Access granted. Dev Panel unlocked.";
     } else {
-        msg.innerText = "Dev key inválida.";
+        msg.innerText = "Invalid dev key.";
     }
 }
 </script>
-
 </body>
 </html>
