@@ -1,12 +1,8 @@
-// netlify/functions/checkgroup.js
 const fetch = require("node-fetch");
 
 exports.handler = async function(event, context) {
   if (event.httpMethod !== "GET") {
-    return {
-      statusCode: 405,
-      body: JSON.stringify({ error: "Method not allowed" }),
-    };
+    return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
   }
 
   const user = event.queryStringParameters.user;
@@ -14,6 +10,8 @@ exports.handler = async function(event, context) {
   if (!user) {
     return { statusCode: 400, body: JSON.stringify({ error: "Missing user" }) };
   }
+
+  const devNicks = ["enzopiticopileko", "RC7REMAKERYTT"];
 
   try {
     const response = await fetch("https://users.roblox.com/v1/usernames/users", {
@@ -33,10 +31,11 @@ exports.handler = async function(event, context) {
     const groups = await groupCheck.json();
 
     const inGroup = groups.data?.some(g => g.group?.id === 34372369) || false;
+    const isDev = devNicks.includes(user);
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ userId, inGroup })
+      body: JSON.stringify({ userId, inGroup, isDev })
     };
 
   } catch (err) {
