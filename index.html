@@ -26,84 +26,79 @@
         border-bottom: 2px solid rgba(255,255,255,0.2);
     }
     .logo img {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        box-shadow: 0 0 8px rgba(0,0,0,0.8);
-        margin-left: 20px;
+        width:48px;
+        height:48px;
+        border-radius:12px;
+        box-shadow:0 0 8px rgba(0,0,0,0.8);
     }
     nav {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-right: 40px;
+        display:flex;
+        align-items:center;
+        gap:20px;
     }
     nav button {
-        background: rgba(255,255,255,0.1);
-        border: 1px solid #fff;
-        color: #fff;
-        padding: 8px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background 0.3s;
-        font-size: 0.9rem;
+        background:none;
+        border:none;
+        color:#fff;
+        padding:8px 12px;
+        font-size:1rem;
+        cursor:pointer;
+        position:relative;
+        transition: color 0.3s;
     }
-    nav button:hover { background: rgba(255,255,255,0.25); }
+    nav button:hover {
+        color:#7fffd4;
+    }
+    nav button::after {
+        content:"";
+        position:absolute;
+        width:0%;
+        height:2px;
+        background:#7fffd4;
+        left:0;
+        bottom:-3px;
+        transition:width 0.3s;
+    }
+    nav button:hover::after {
+        width:100%;
+    }
     main {
-        flex: 1;
-        width: 100%;
-        max-width: 1100px;
-        display: flex;
-        gap: 40px;
-        padding: 40px;
+        flex:1;
+        width:100%;
+        max-width:1100px;
+        padding:40px 20px;
     }
-    .sidebar {
-        width: 200px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-    .sidebar button {
-        width: 100%;
-        padding: 10px;
-        text-align: left;
-        background: rgba(255,255,255,0.1);
-        border: 1px solid #fff;
-        color: #fff;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-    .sidebar button:hover { background: rgba(255,255,255,0.2); }
-    .sidebar button.active { background: rgba(255,255,255,0.35); }
     .content {
-        flex: 1;
-        background: rgba(0,0,0,0.55);
-        padding: 25px;
-        border-radius: 12px;
-        display: none;
-        animation: fade 0.4s ease;
+        display:none;
+        background: rgba(0,0,0,0.4);
+        padding:25px;
+        border-radius:12px;
+        margin-top:20px;
+        animation:fade 0.4s ease;
     }
-    .content.active { display: block; }
-    @keyframes fade { from {opacity:0; transform:translateY(8px);} to {opacity:1; transform:translateY(0);} }
+    .content.active { display:block; }
+    @keyframes fade {
+        from { opacity:0; transform:translateY(8px); }
+        to { opacity:1; transform:translateY(0); }
+    }
     .login-box {
-        margin-top: 20px;
-        padding: 15px;
+        margin-top:20px;
+        padding:15px;
         background: rgba(255,255,255,0.1);
-        border-radius: 10px;
+        border-radius:10px;
     }
     input {
-        padding: 8px;
-        width: 220px;
-        border-radius: 5px;
-        border: none;
-        margin-right: 10px;
+        padding:8px;
+        width:220px;
+        border-radius:5px;
+        border:none;
+        margin-right:10px;
     }
     .plan {
         background: rgba(255,255,255,0.1);
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 10px;
+        padding:20px;
+        border-radius:10px;
+        margin-top:10px;
     }
 </style>
 </head>
@@ -114,19 +109,16 @@
         <img src="https://cdn.discordapp.com/icons/1437834972496138362/bd33d3b2579cfbd7c0cd2bf0a109e195.webp?size=64" alt="LunyalX Logo">
     </div>
     <nav>
-        <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Discord</button>
-    </nav>
-</header>
-
-<main>
-    <div class="sidebar">
         <button class="tab-btn active" data-tab="home">Home</button>
         <button class="tab-btn" data-tab="tos">TOS</button>
         <button class="tab-btn" data-tab="plans">Plans</button>
         <button class="tab-btn" data-tab="dashboard">Dashboard</button>
         <button class="tab-btn" data-tab="devpanel">Dev Panel</button>
-    </div>
+        <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Discord</button>
+    </nav>
+</header>
 
+<main>
     <!-- HOME -->
     <div class="content active" id="home">
         <h1>Lunyal X Server Side</h1>
@@ -206,42 +198,28 @@ tabs.forEach(btn => {
 
 // DEV NICKS BLOQUEADOS
 const devNicks = ["enzopiticopileko", "RC7REMAKERYTT"];
-// DEV KEYS
-const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
+const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7","dev-V8LQ2-9DMA2-1KXQ0"];
 
 async function login() {
     const user = document.getElementById("username").value.trim();
     const msg = document.getElementById("loginmsg");
 
     if (!user) return msg.innerText = "Enter a username.";
-
-    if (devNicks.includes(user)) {
-        msg.innerText = "This username is protected.";
-        return;
-    }
+    if (devNicks.includes(user)) { msg.innerText = "This username is protected."; return; }
 
     msg.innerText = "Checking whitelist...";
 
-    try {
-        const res = await fetch(`/api/checkgroup?user=${user}`);
-        const data = await res.json();
+    const res = await fetch(`/api/checkgroup?user=${user}`);
+    const data = await res.json();
 
-        if (data.error) {
-            msg.innerText = "User not found.";
-            return;
-        }
+    if (data.error) { msg.innerText="User not found."; return; }
 
-        const whitelisted = data.inGroup === true;
+    const whitelisted = data.inGroup === true;
 
-        document.getElementById("userinfo").innerHTML = `
-            <h2>User: ${user}</h2>
-            <p>Whitelist: ${whitelisted ? "Free Plan" : "None"}</p>
-        `;
+    document.getElementById("userinfo").innerHTML = `<h2>User: ${user}</h2>
+    <p>Whitelist: ${whitelisted ? "Free Plan" : "None"}</p>`;
 
-        msg.innerText = "Login successful!";
-    } catch (err) {
-        msg.innerText = "Error connecting to API.";
-    }
+    msg.innerText = "Login successful!";
 }
 
 function checkDev() {
@@ -255,5 +233,6 @@ function checkDev() {
     }
 }
 </script>
+
 </body>
 </html>
