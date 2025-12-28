@@ -1,8 +1,8 @@
 {
   "name": "lunyalx-ss-site",
   "version": "1.0.0",
-  "description": "Lunyal X Server Side site",
-  "main": "index.js",
+  "description": "Lunyal X Server Side",
+  "main": "index.html",
   "dependencies": {
     "node-fetch": "^2.6.7"
   }
