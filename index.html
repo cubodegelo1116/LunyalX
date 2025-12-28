@@ -2,238 +2,186 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lunyal X Server Side</title>
+<title>LunyalX Serverside</title>
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
     body {
         font-family: Arial, sans-serif;
         color: #fff;
-        background: linear-gradient(135deg, rgb(110, 222, 206), rgb(0,0,0));
-        min-height: 100vh;
+        background: linear-gradient(135deg, rgb(10, 10, 10), rgb(0, 0, 0));
+        margin: 0;
+        padding: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
-        transition: background 0.5s ease;
     }
 
-    header {
+    /* NAVBAR */
+    nav {
         width: 100%;
+        background: rgba(20, 20, 20, 0.7);
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 15px 30px;
-        background: rgba(0,0,0,0.3);
-        border-bottom: 2px solid rgba(255,255,255,0.2);
+        justify-content: space-between;
+        padding: 12px 30px;
+        backdrop-filter: blur(6px);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        position: sticky;
+        top: 0;
     }
 
-    .logo img {
+    nav img {
         width: 48px;
         height: 48px;
         border-radius: 12px;
-        box-shadow: 0 0 8px rgba(0,0,0,0.8);
     }
 
-    nav {
+    nav .buttons {
         display: flex;
-        align-items: center;
         gap: 15px;
     }
 
     nav button {
-        background: rgba(255,255,255,0.1);
-        border: 1px solid #fff;
-        color: #fff;
-        padding: 8px 15px;
-        border-radius: 5px;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 16px;
         cursor: pointer;
-        transition: background 0.3s;
-        font-size: 0.9rem;
-    }
-
-    nav button.active {
-        background: rgba(255,255,255,0.3);
+        padding: 8px 14px;
+        transition: 0.25s ease;
     }
 
     nav button:hover {
-        background: rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.08);
+        border-radius: 6px;
     }
 
-    main {
-        flex: 1;
-        width: 100%;
-        max-width: 1000px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        text-align: center;
-        padding: 50px 20px;
-    }
-
-    main h1 {
-        font-size: 3rem;
-        margin-bottom: 20px;
-    }
-
+    /* CONTENT AREAS */
     .content {
-        width: 100%;
-        margin-top: 30px;
-        text-align: left;
-        background: rgba(0,0,0,0.3);
-        padding: 20px;
-        border-radius: 10px;
-        opacity: 0;
-        max-height: 0;
-        overflow: hidden;
-        transition: opacity 0.5s ease, max-height 0.5s ease;
+        display: none;
+        margin-top: 60px;
+        width: 70%;
+        animation: fadeIn 0.4s ease forwards;
     }
 
     .content.active {
-        opacity: 1;
-        max-height: 2000px; /* suficiente para todo conteúdo */
+        display: block;
     }
 
-    .content h1 {
-        font-size: 2rem;
-        margin-bottom: 15px;
-        border-bottom: 2px solid rgba(255,255,255,0.3);
-        padding-bottom: 10px;
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
-    .content h2 {
-        font-size: 1.2rem;
-        margin-top: 20px;
-        margin-bottom: 10px;
+    h1, h2 {
+        color: white;
     }
 
-    .content hr {
+    hr {
         border: 0;
-        border-top: 1px solid rgba(255,255,255,0.3);
-        margin: 15px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        margin: 20px 0;
     }
 
-    .plans {
-        display: flex;
-        gap: 20px;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
+    /* PLANS */
     .plan {
-        background: rgba(255,255,255,0.1);
-        padding: 20px 30px;
+        background: rgba(255,255,255,0.05);
+        padding: 20px;
+        margin: 15px 0;
         border-radius: 10px;
-        min-width: 200px;
-        transition: background 0.3s;
-        cursor: pointer;
-        text-align: center;
+        transition: 0.25s ease;
     }
 
     .plan:hover {
-        background: rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.1);
     }
 
-    .plan h3 {
-        margin-bottom: 10px;
+    .plan button {
+        margin-top: 10px;
+        padding: 10px 20px;
+        background: rgba(110, 222, 206, 0.2);
+        border: none;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s ease;
     }
 
-    .plan p {
-        font-size: 0.9rem;
+    .plan button:hover {
+        background: rgba(110, 222, 206, 0.4);
     }
-
-    footer {
-        width: 100%;
-        text-align: center;
-        padding: 20px;
-        font-size: 0.8rem;
-        background: rgba(0,0,0,0.5);
-    }
-
 </style>
+
+<script>
+function openTab(tab) {
+    document.querySelectorAll(".content").forEach(c => c.classList.remove("active"));
+    document.getElementById(tab).classList.add("active");
+}
+</script>
+
 </head>
 <body>
 
-<header>
-    <div class="logo">
-        <img src="https://cdn.discordapp.com/icons/1437834972496138362/bd33d3b2579cfbd7c0cd2bf0a109e195.webp?size=64" alt="LunyalX Logo">
-    </div>
-    <nav>
-        <button class="tab-btn active" data-tab="home">Home</button>
-        <button class="tab-btn" data-tab="tos">TOS</button>
-        <button class="tab-btn" data-tab="plans">View Plans</button>
+<!-- NAVBAR -->
+<nav>
+    <img src="https://cdn.discordapp.com/icons/1437834972496138362/bd33d3b2579cfbd7c0cd2bf0a109e195.webp?size=64">
+    <div class="buttons">
+        <button onclick="openTab('home')">Home</button>
+        <button onclick="openTab('tos')">TOS</button>
+        <button onclick="openTab('plans')">View Plans</button>
         <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Discord</button>
-    </nav>
-</header>
+    </div>
+</nav>
 
-<main>
-    <h1>Lunyal X Server Side</h1>
+<!-- HOME -->
+<div class="content active" id="home">
+    <h1>Welcome to Lunyal X Server Side</h1>
+    <p style="font-size:17px;opacity:0.85;">
+        The best serverside you can find!
+    </p>
+</div>
 
-    <div class="content active" id="home">
-        <p>Welcome to Lunyal X Server Side, the best serverside you can find!</p>
+<!-- TOS -->
+<div class="content" id="tos">
+    <h1>Terms of Service</h1>
+    <hr>
+
+    <h2>LunyalX ServerSide (Free Plan)</h2>
+    <p>
+        Do not use HappyHub, K00pgui of all versions.<br>
+        No mass banning/kicking of players.<br>
+        Abuses are allowed in free/standard plans.<br>
+        Always shutdown the game after destroying it.<br>
+        Teleport players only if there are more than 10/20 players.<br>
+    </p>
+
+    <hr>
+    <h2>Blacklist Days If You Break The Rules</h2>
+    <p>
+        Using HappyHub SS V2 or k00pguis = 1 Day Blacklisted + 1 Warn.<br>
+        Still using HappyHub SS V2 or k00pguis = 7 Days Blacklisted.<br>
+        Teleport >10/20 players = 2 Days Blacklisted + 1 Warn.<br>
+        Still doing it = 10 Days Blacklisted.<br>
+    </p>
+
+    <hr>
+</div>
+
+<!-- PLANS -->
+<div class="content" id="plans">
+    <h1>Plans</h1>
+    <hr>
+
+    <div class="plan">
+        <h2>Free Plan</h2>
+        <p>Join the Discord server and get whitelisted to use LunyalX for free.</p>
+        <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Join Discord</button>
     </div>
 
-    <div class="content" id="tos">
-        <h1>TOS</h1>
-        <hr>
-        <h2>Terms of Service for LunyalX Server Side (Free Plan)</h2>
-        <p>
-            Do not use HappyHub, K00pguis of all versions.<br>
-            No mass banning/kicking of players, it may cause fewer active players.<br>
-            Abuses are allowed in the free plan and standard plan.<br>
-            Always shut down the game after destroying it.<br>
-            Teleporting players is allowed only if there are more than 10/20 players.<br>
-        </p>
-        <hr>
-        <h2>Blacklist Days If You Break The Rules</h2>
-        <p>
-            Using HappyHub SS V2 or k00pguis = 1 Day Blacklisted + 1 Warn.<br>
-            Still using HappyHub SS V2 or k00pguis = 7 Days Blacklisted.<br>
-            Teleporting players with score >10/20 = 2 Days Blacklisted + 1 Warn.<br>
-            Still teleporting with score >10/20 = 10 Days Blacklisted.
-        </p>
+    <div class="plan">
+        <h2>Standard Plan</h2>
+        <p>This plan is currently being developed.</p>
     </div>
-
-    <div class="content" id="plans">
-        <h2>Available Plans</h2>
-        <div class="plans">
-            <div class="plan" onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">
-                <h3>Free</h3>
-                <p>Access via Discord and whitelist.</p>
-            </div>
-            <div class="plan">
-                <h3>Standard</h3>
-                <p>Under development.</p>
-            </div>
-        </div>
-    </div>
-
-</main>
-
-<footer>
-    &copy; 2025 LunyalX. All rights reserved.
-</footer>
-
-<script>
-    const tabs = document.querySelectorAll('.tab-btn');
-    const contents = document.querySelectorAll('.content');
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-
-            contents.forEach(c => c.classList.remove('active'));
-            document.getElementById(tab.dataset.tab).classList.add('active');
-        });
-    });
-</script>
+</div>
 
 </body>
 </html>
