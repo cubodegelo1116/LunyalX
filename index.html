@@ -30,9 +30,17 @@ header {
     backdrop-filter:blur(12px);
 }
 
-.logo img {
-    width:48px;height:48px;border-radius:12px;
+/* LOGO */
+.site-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.25s ease;
     box-shadow:0 0 12px rgba(0,0,0,0.6);
+}
+.site-logo:hover {
+    transform: translateY(-5px);
 }
 
 nav {display:flex; align-items:center; gap:20px;}
@@ -61,7 +69,7 @@ main {
     padding:40px 20px;
 }
 
-/* CONTENT BOXES */
+/* CONTENT */
 .content {
     display:none;
     background:rgba(255,255,255,0.07);
@@ -228,7 +236,9 @@ button.plan-btn:hover { background:#64ccb8; }
 
 <header>
 <div class="logo">
-    <img src="https://cdn.discordapp.com/icons/1437834972496138362/d9cf5ac311216a794e297a3b3d388755.webp?size=64">
+    <img src="https://cdn.discordapp.com/icons/1437834972496138362/d9cf5ac311216a794e297a3b3d388755.webp?size=64"
+         class="site-logo"
+         onclick="goPlans()">
 </div>
 
 <nav>
@@ -256,7 +266,8 @@ button.plan-btn:hover { background:#64ccb8; }
 <h1>Terms of Service — Free Plan</h1>
 
 <div class="tos-box">
-    <ul>
+<ul>
+
 <li><span class="badge red">❌</span> No Map Changing</li>
 <li><span class="badge red">❌</span> No Dex</li>
 <li><span class="badge red">❌</span> No HappyHub or K00pGui</li>
@@ -271,7 +282,7 @@ button.plan-btn:hover { background:#64ccb8; }
 <li><span class="badge green">🟢</span> Killing Players Allowed</li>
 <li><span class="badge green">🟢</span> Giving Require to Friends or Random Players Allowed</li>
 
-    </ul>
+</ul>
 </div>
 </div>
 
@@ -302,7 +313,7 @@ button.plan-btn:hover { background:#64ccb8; }
 
 <div class="faq-item" onclick="toggleFaq(this)">
     <h3>Is it reliable?</h3>
-    <div class="faq-answer">Yes, it's maintained by trusted devs.</div>
+    <div class="faq-answer">Yes, it's maintained by trusted developers.</div>
 </div>
 
 <div class="faq-item" onclick="toggleFaq(this)">
@@ -314,6 +325,7 @@ button.plan-btn:hover { background:#64ccb8; }
     <h3>Payment methods?</h3>
     <div class="faq-answer">Robux only.</div>
 </div>
+
 </div>
 
 <!-- DASHBOARD -->
@@ -354,12 +366,12 @@ tabs.forEach(btn => {
     });
 });
 
-/* FAQ with animation */
+/* FAQ Animation */
 function toggleFaq(item){
     item.classList.toggle("open");
 }
 
-/* Dev Login Logic */
+/* Devs */
 const devNicks = ["enzopiticopileko","RC7REMAKERYTT"];
 const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7","dev-V8LQ2-9DMA2-1KXQ0"];
 
@@ -401,6 +413,15 @@ function checkDev() {
     if (validDevKeys.includes(key)) {
         msg.innerText = "Access granted. Dev Panel unlocked.";
     } else { msg.innerText = "Invalid dev key."; }
+}
+
+/* CLICK LOGO → PLANS */
+function goPlans() {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.content').forEach(s => s.classList.remove('active'));
+
+    document.querySelector('[data-tab="plans"]').classList.add('active');
+    document.getElementById("plans").classList.add('active');
 }
 </script>
 
