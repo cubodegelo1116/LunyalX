@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lunyal X Server Side</title>
+
 <style>
 * {margin:0; padding:0; box-sizing:border-box;}
 body {
@@ -77,14 +78,13 @@ main {
     to {opacity:1; transform:translateY(0);}
 }
 
-/* LOGIN BOX */
-/* Placeholder branco no input do Dashboard */
+/* LOGIN INPUT */
 #loginBox input::placeholder {
-    color: #ffffff;
-    opacity: 0.9;
+    color:#fff;
+    opacity:0.9;
 }
 
-/* Deixa o botão de Login igual ao Join Discord */
+/* LOGIN BUTTON (estilo Join Discord) */
 #loginBox button {
     background:#7fffd4;
     color:#000;
@@ -95,11 +95,9 @@ main {
     font-weight:600;
     transition:0.25s;
 }
-
 #loginBox button:hover {
     background:#64ccb8;
 }
-
 
 input {
     padding:9px 12px;
@@ -130,7 +128,6 @@ input:focus {
     transform:translateY(-3px);
     box-shadow:0 8px 20px rgba(0,0,0,0.3);
 }
-
 button.plan-btn {
     background:#7fffd4;
     color:#000;
@@ -145,33 +142,54 @@ button.plan-btn:hover {
     background:#64ccb8;
 }
 
-/* FAQ */
+/* FAQ – COMPLETO COM ANIMAÇÃO */
 .faq-item {
     margin-bottom:15px;
-    padding:12px;
+    padding:12px 15px;
     background:rgba(255,255,255,0.06);
     border-radius:10px;
     border:1px solid rgba(255,255,255,0.1);
     cursor:pointer;
     transition:0.25s;
+    position:relative;
 }
+
+/* seta ▼ */
+.faq-item::after {
+    content:"▼";
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform:translateY(-50%) rotate(0deg);
+    transition:0.3s ease;
+    font-size:14px;
+    opacity:0.8;
+}
+
+/* seta girando */
+.faq-item.open::after {
+    transform:translateY(-50%) rotate(180deg);
+}
+
 .faq-item:hover {
     background:rgba(255,255,255,0.12);
 }
 
+/* resposta com animação */
 .faq-answer {
-    display:none;
-    margin-top:10px;
-    padding-left:10px;
+    max-height:0;
+    overflow:hidden;
     opacity:0;
-    transition:0.3s;
+    padding-left:10px;
+    transition:max-height 0.35s ease, opacity 0.35s ease;
 }
+
 .faq-item.open .faq-answer {
-    display:block;
+    max-height:300px;
     opacity:1;
 }
 
-/* AVATAR */
+/* Avatar */
 .user-avatar {
     width:40px;
     height:40px;
@@ -180,8 +198,9 @@ button.plan-btn:hover {
     box-shadow:0 0 10px rgba(127,255,212,0.5);
 }
 </style>
-
 </head>
+
+
 <body>
 
 <header>
@@ -199,6 +218,7 @@ button.plan-btn:hover {
 </header>
 
 <main>
+
 <div class="content active" id="home">
 <h1>Lunyal X Server Side</h1>
 <p>Welcome to Lunyal X Server Side, the best serverside you can find!</p>
@@ -211,35 +231,43 @@ button.plan-btn:hover {
 
 <div class="content" id="plans">
 <h1>Plans</h1>
+
 <div class="plan">
 <h2>Free Plan</h2>
 <p>Access via Discord and whitelist.</p>
 <button class="plan-btn" onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Join Discord</button>
 </div>
+
 <div class="plan">
 <h2>Standard Plan</h2>
 <p>Coming soon.</p>
 </div>
+
 </div>
 
 <div class="content" id="faq">
 <h1>FAQ</h1>
+
 <div class="faq-item" onclick="toggleFaq(this)">
 <h3>What is Lunyal X?</h3>
 <div class="faq-answer">Lunyal X is a Roblox server-side script hub.</div>
 </div>
+
 <div class="faq-item" onclick="toggleFaq(this)">
 <h3>Is it reliable?</h3>
 <div class="faq-answer">Yes, it's maintained by trusted devs.</div>
 </div>
+
 <div class="faq-item" onclick="toggleFaq(this)">
 <h3>How do I purchase?</h3>
 <div class="faq-answer">Currently only Roblox (Robux) payment is accepted.</div>
 </div>
+
 <div class="faq-item" onclick="toggleFaq(this)">
 <h3>Payment methods?</h3>
 <div class="faq-answer">Robux only.</div>
 </div>
+
 </div>
 
 <div class="content" id="dashboard">
@@ -277,7 +305,10 @@ tabs.forEach(btn => {
 });
 
 const devNicks = ["enzopiticopileko","RC7REMAKERYTT"];
-const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7","dev-V8LQ2-9DMA2-1KXQ0"];
+const validDevKeys = [
+    "dev-02JH9-KQ3L2-HF9A7",
+    "dev-V8LQ2-9DMA2-1KXQ0"
+];
 
 async function login() {
     const user = document.getElementById("username").value.trim();
@@ -293,37 +324,37 @@ async function login() {
 
         if (data.error) { msg.innerText="User not found."; return; }
 
-        // Avatar from Roblox
         avatar.innerHTML = `<img class="user-avatar" src="https://www.roblox.com/bust-thumbnail/image?userId=${data.userId}&width=50&height=50&format=png">`;
 
-        document.getElementById("userinfo").innerHTML = `<h2>User: ${user}</h2><p>Whitelist: ${data.inGroup?"Free Plan":"None"}</p>`;
+        document.getElementById("userinfo").innerHTML =
+            `<h2>User: ${user}</h2><p>Whitelist: ${data.inGroup?"Free Plan":"None"}</p>`;
 
         if (data.isDev) {
             document.getElementById("devPanelBtn").style.display = "inline-block";
-            document.getElementById("devkey").parentElement.style.display = "block";
         } else {
             document.getElementById("devPanelBtn").style.display = "none";
-            document.getElementById("devkey").parentElement.style.display = "none";
         }
 
         msg.innerText = "Login successful!";
 
-    } catch(e) { msg.innerText="Error connecting to API."; }
+    } catch(e) {
+        msg.innerText="Error connecting to API.";
+    }
+}
+
+function toggleFaq(item){
+    item.classList.toggle("open");
 }
 
 function checkDev() {
     const key = document.getElementById("devkey").value.trim();
     const msg = document.getElementById("devmsg");
 
-    if (validDevKeys.includes(key)) {
-        msg.innerText = "Access granted. Dev Panel unlocked.";
-    } else { msg.innerText = "Invalid dev key."; }
+    msg.innerText = validDevKeys.includes(key)
+        ? "Access granted. Dev Panel unlocked."
+        : "Invalid dev key.";
 }
 
-function toggleFaq(item){
-    const ans = item.querySelector(".faq-answer");
-    ans.style.display = ans.style.display === "block" ? "none" : "block";
-}
 </script>
 
 </body>
