@@ -1,4 +1,15 @@
 export default async function handler(req, res) {
+  // Permite CORS
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
   const { user } = req.query;
 
   if (!user) {
@@ -6,37 +17,56 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Requisição pra API do Roblox
-    const robloxRes = await fetch(`https://api.roblox.com/users/get-by-username?username=${encodeURIComponent(user)}`);
-    
+    // Requisição pra nova API do Roblox
+    const robloxRes = await fetch(`https://users.roblox.com/v1/usernames/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        usernames: [user],
+        excludeBannedUsers: false
+      })
+    });
+
     if (!robloxRes.ok) {
       return res.status(404).json({ error: "User not found" });
     }
 
     const userData = await robloxRes.json();
-    const userId = userData.Id;
 
-    // Aqui você verifica se o usuário tá no grupo (whitelist)
-    const groupRes = await fetch(`https://api.roblox.com/user/${userId}/groups`);
+    if (!userData.data || userData.data.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const userId = userData.data[0].id;
+    const username = userData.data[0].name;
+
+    // Verificar grupo (muda o ID do grupo aqui)
+    const groupId = 201551859; // MUDA ISSO PRO ID DO SEU GRUPO!
+    
+    const groupRes = await fetch(`https://groups.roblox.com/v1/users/${userId}/groups/roles`);
     const groupData = await groupRes.json();
 
-    // ID do seu grupo (muda isso pro seu grupo)
-    const groupId = 1437834972496138362; // Esse é o ID que tá no icon do Discord
-    const inGroup = groupData.some(g => g.Id === groupId);
+    const inGroup = groupData.data.some(g => g.group.id === groupId);
 
-    // Lista de devs (do seu código)
+    // Lista de devs
     const devNicks = ["enzopiticopileko", "RC7REMAKERYTT"];
-    const isDev = devNicks.includes(user.toLowerCase());
+    const isDev = devNicks.includes(username.toLowerCase());
 
     return res.status(200).json({
       userId,
-      username: user,
+      username,
       inGroup,
-      isDev
+      isDev,
+      error: null
     });
 
   } catch (error) {
     console.error("API Error:", error);
-    return res.status(500).json({ error: "Error connecting to API" });
+    return res.status(500).json({ 
+      error: "Error connecting to API",
+      details: error.message 
+    });
   }
 }
