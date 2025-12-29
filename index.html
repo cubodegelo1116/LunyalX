@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lunyal X Server Side</title>
-
 <style>
 * {margin:0; padding:0; box-sizing:border-box;}
 body {
@@ -60,7 +59,7 @@ main {
     padding:40px 20px;
 }
 
-/* CONTENT */
+/* CONTENT BOXES */
 .content {
     display:none;
     background:rgba(255,255,255,0.07);
@@ -78,13 +77,12 @@ main {
     to {opacity:1; transform:translateY(0);}
 }
 
-/* LOGIN INPUT */
+/* LOGIN */
 #loginBox input::placeholder {
-    color:#fff;
-    opacity:0.9;
+    color: #ffffff;
+    opacity: 0.9;
 }
 
-/* LOGIN BUTTON (estilo Join Discord) */
 #loginBox button {
     background:#7fffd4;
     color:#000;
@@ -95,9 +93,7 @@ main {
     font-weight:600;
     transition:0.25s;
 }
-#loginBox button:hover {
-    background:#64ccb8;
-}
+#loginBox button:hover { background:#64ccb8; }
 
 input {
     padding:9px 12px;
@@ -128,6 +124,7 @@ input:focus {
     transform:translateY(-3px);
     box-shadow:0 8px 20px rgba(0,0,0,0.3);
 }
+
 button.plan-btn {
     background:#7fffd4;
     color:#000;
@@ -138,58 +135,36 @@ button.plan-btn {
     font-weight:600;
     transition:0.25s;
 }
-button.plan-btn:hover {
-    background:#64ccb8;
-}
+button.plan-btn:hover { background:#64ccb8; }
 
-/* FAQ – COMPLETO COM ANIMAÇÃO */
+/* FAQ */
 .faq-item {
-    margin-bottom:15px;
-    padding:12px 15px;
     background:rgba(255,255,255,0.06);
-    border-radius:10px;
     border:1px solid rgba(255,255,255,0.1);
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:10px;
     cursor:pointer;
     transition:0.25s;
-    position:relative;
 }
-
-/* seta ▼ */
-.faq-item::after {
-    content:"▼";
-    position:absolute;
-    right:15px;
-    top:50%;
-    transform:translateY(-50%) rotate(0deg);
-    transition:0.3s ease;
-    font-size:14px;
-    opacity:0.8;
-}
-
-/* seta girando */
-.faq-item.open::after {
-    transform:translateY(-50%) rotate(180deg);
-}
-
 .faq-item:hover {
     background:rgba(255,255,255,0.12);
 }
 
-/* resposta com animação */
 .faq-answer {
     max-height:0;
     overflow:hidden;
     opacity:0;
-    padding-left:10px;
-    transition:max-height 0.35s ease, opacity 0.35s ease;
+    transition:max-height .35s ease, opacity .35s ease;
+    padding-left:5px;
 }
-
 .faq-item.open .faq-answer {
-    max-height:300px;
+    max-height:200px;
     opacity:1;
+    margin-top:10px;
 }
 
-/* Avatar */
+/* AVATAR */
 .user-avatar {
     width:40px;
     height:40px;
@@ -197,21 +172,70 @@ button.plan-btn:hover {
     border:2px solid #7fffd4;
     box-shadow:0 0 10px rgba(127,255,212,0.5);
 }
+
+/* TOS */
+.tos-box {
+    background: rgba(255,255,255,0.07);
+    padding: 25px;
+    border-radius: 15px;
+    margin-top: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(8px);
+    animation: fade 0.4s ease;
+}
+
+.tos-box ul {
+    list-style: none;
+    padding-left: 0;
+    font-size: 1.07rem;
+    line-height: 1.75rem;
+}
+
+.tos-box li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.badge {
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.badge.red {
+    background: rgba(255, 50, 50, 0.25);
+    border: 1px solid rgba(255, 30, 30, 0.45);
+}
+
+.badge.yellow {
+    background: rgba(255, 210, 50, 0.25);
+    border: 1px solid rgba(255, 210, 0, 0.4);
+}
+
+.badge.green {
+    background: rgba(80, 255, 160, 0.25);
+    border: 1px solid rgba(60, 255, 140, 0.45);
+}
 </style>
+
 </head>
-
-
 <body>
 
 <header>
-<div class="logo"><img src="https://cdn.discordapp.com/icons/1437834972496138362/d9cf5ac311216a794e297a3b3d388755.webp?size=64"></div>
+<div class="logo">
+    <img src="https://cdn.discordapp.com/icons/1437834972496138362/d9cf5ac311216a794e297a3b3d388755.webp?size=64">
+</div>
+
 <nav>
 <button class="tab-btn active" data-tab="home">Home</button>
 <button class="tab-btn" data-tab="tos">TOS</button>
 <button class="tab-btn" data-tab="plans">Plans</button>
 <button class="tab-btn" data-tab="faq">FAQ</button>
 <button class="tab-btn" data-tab="dashboard">Dashboard</button>
-<button class="tab-btn" data-tab="devpanel" id="devPanelBtn" style="display:none;">Dev Panel</button>
+<button class="tab-btn" id="devPanelBtn" data-tab="devpanel" style="display:none;">Dev Panel</button>
 <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Discord</button>
 <span id="userAvatar"></span>
 </nav>
@@ -219,16 +243,36 @@ button.plan-btn:hover {
 
 <main>
 
+<!-- HOME -->
 <div class="content active" id="home">
 <h1>Lunyal X Server Side</h1>
 <p>Welcome to Lunyal X Server Side, the best serverside you can find!</p>
 </div>
 
+<!-- TOS -->
 <div class="content" id="tos">
-<h1>TOS</h1>
-<p>Rules...</p>
+<h1>Terms of Service — Free Plan</h1>
+
+<div class="tos-box">
+    <ul>
+        <li><span class="badge red">❌</span> No Map Changing</li>
+        <li><span class="badge red">❌</span> No Dex</li>
+        <li><span class="badge red">❌</span> No HappyHub ou K00pGui</li>
+        <li><span class="badge red">❌</span> No Toxic</li>
+        <li><span class="badge red">❌</span> No Ban / Kick Players</li>
+
+        <li><span class="badge yellow">🟡</span> No Troll GUIs</li>
+        <li><span class="badge yellow">🟡</span> No External Executors Requires</li>
+
+        <li><span class="badge green">🟢</span> Abuse permitido</li>
+        <li><span class="badge green">🟢</span> Abusive Scripts permitidos</li>
+        <li><span class="badge green">🟢</span> Kill Players permitido</li>
+        <li><span class="badge green">🟢</span> Give Require para amigos ou jogadores aleatórios</li>
+    </ul>
+</div>
 </div>
 
+<!-- PLANS -->
 <div class="content" id="plans">
 <h1>Plans</h1>
 
@@ -242,37 +286,38 @@ button.plan-btn:hover {
 <h2>Standard Plan</h2>
 <p>Coming soon.</p>
 </div>
-
 </div>
 
+<!-- FAQ -->
 <div class="content" id="faq">
 <h1>FAQ</h1>
 
 <div class="faq-item" onclick="toggleFaq(this)">
-<h3>What is Lunyal X?</h3>
-<div class="faq-answer">Lunyal X is a Roblox server-side script hub.</div>
+    <h3>What is Lunyal X?</h3>
+    <div class="faq-answer">Lunyal X is a Roblox server-side script hub.</div>
 </div>
 
 <div class="faq-item" onclick="toggleFaq(this)">
-<h3>Is it reliable?</h3>
-<div class="faq-answer">Yes, it's maintained by trusted devs.</div>
+    <h3>Is it reliable?</h3>
+    <div class="faq-answer">Yes, it's maintained by trusted devs.</div>
 </div>
 
 <div class="faq-item" onclick="toggleFaq(this)">
-<h3>How do I purchase?</h3>
-<div class="faq-answer">Currently only Roblox (Robux) payment is accepted.</div>
+    <h3>How do I purchase?</h3>
+    <div class="faq-answer">Currently only Roblox (Robux) payment is accepted.</div>
 </div>
 
 <div class="faq-item" onclick="toggleFaq(this)">
-<h3>Payment methods?</h3>
-<div class="faq-answer">Robux only.</div>
+    <h3>Payment methods?</h3>
+    <div class="faq-answer">Robux only.</div>
+</div>
 </div>
 
-</div>
-
+<!-- DASHBOARD -->
 <div class="content" id="dashboard">
 <h1>Dashboard</h1>
 <div id="userinfo"></div>
+
 <div class="login-box" id="loginBox">
 <h3>Login</h3>
 <input id="username" placeholder="Roblox Username">
@@ -281,6 +326,7 @@ button.plan-btn:hover {
 </div>
 </div>
 
+<!-- DEV PANEL -->
 <div class="content" id="devpanel">
 <h1>Dev Panel</h1>
 <p>Enter dev-key:</p>
@@ -292,24 +338,29 @@ button.plan-btn:hover {
 </main>
 
 <script>
+/* Tabs */
 const tabs = document.querySelectorAll('.tab-btn');
 const sections = document.querySelectorAll('.content');
 
 tabs.forEach(btn => {
     btn.addEventListener("click", () => {
-        tabs.forEach(b=>b.classList.remove("active"));
-        sections.forEach(s=>s.classList.remove("active"));
+        tabs.forEach(b => b.classList.remove("active"));
+        sections.forEach(s => s.classList.remove("active"));
         btn.classList.add("active");
         document.getElementById(btn.dataset.tab).classList.add("active");
     });
 });
 
-const devNicks = ["enzopiticopileko","RC7REMAKERYTT"];
-const validDevKeys = [
-    "dev-02JH9-KQ3L2-HF9A7",
-    "dev-V8LQ2-9DMA2-1KXQ0"
-];
+/* FAQ with animation */
+function toggleFaq(item){
+    item.classList.toggle("open");
+}
 
+/* Dev Login Logic */
+const devNicks = ["enzopiticopileko","RC7REMAKERYTT"];
+const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7","dev-V8LQ2-9DMA2-1KXQ0"];
+
+/* Login */
 async function login() {
     const user = document.getElementById("username").value.trim();
     const msg = document.getElementById("loginmsg");
@@ -327,7 +378,7 @@ async function login() {
         avatar.innerHTML = `<img class="user-avatar" src="https://www.roblox.com/bust-thumbnail/image?userId=${data.userId}&width=50&height=50&format=png">`;
 
         document.getElementById("userinfo").innerHTML =
-            `<h2>User: ${user}</h2><p>Whitelist: ${data.inGroup?"Free Plan":"None"}</p>`;
+            `<h2>User: ${user}</h2><p>Whitelist: ${data.inGroup ? "Free Plan" : "None"}</p>`;
 
         if (data.isDev) {
             document.getElementById("devPanelBtn").style.display = "inline-block";
@@ -336,25 +387,18 @@ async function login() {
         }
 
         msg.innerText = "Login successful!";
-
-    } catch(e) {
-        msg.innerText="Error connecting to API.";
-    }
+    } catch(e) { msg.innerText="Error connecting to API."; }
 }
 
-function toggleFaq(item){
-    item.classList.toggle("open");
-}
-
+/* Dev Key */
 function checkDev() {
     const key = document.getElementById("devkey").value.trim();
     const msg = document.getElementById("devmsg");
 
-    msg.innerText = validDevKeys.includes(key)
-        ? "Access granted. Dev Panel unlocked."
-        : "Invalid dev key.";
+    if (validDevKeys.includes(key)) {
+        msg.innerText = "Access granted. Dev Panel unlocked.";
+    } else { msg.innerText = "Invalid dev key."; }
 }
-
 </script>
 
 </body>
