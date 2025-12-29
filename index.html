@@ -78,13 +78,28 @@ main {
 }
 
 /* LOGIN BOX */
-.login-box {
-    margin-top:20px;
-    padding:20px;
-    background:rgba(255,255,255,0.08);
-    border-radius:12px;
-    border:1px solid rgba(255,255,255,0.12);
+/* Placeholder branco no input do Dashboard */
+#loginBox input::placeholder {
+    color: #ffffff;
+    opacity: 0.9;
 }
+
+/* Deixa o botão de Login igual ao Join Discord */
+#loginBox button {
+    background:#7fffd4;
+    color:#000;
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.25s;
+}
+
+#loginBox button:hover {
+    background:#64ccb8;
+}
+
 
 input {
     padding:9px 12px;
