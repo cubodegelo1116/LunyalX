@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, get, set, update } from 'firebase/database';
+import { getDatabase, ref, get, set } from 'firebase/database';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDypGqtLgFZ2hBhJs4a68g7hIt6G-K_SOU",
@@ -8,8 +8,7 @@ const firebaseConfig = {
   projectId: "lunyalx",
   storageBucket: "lunyalx.firebasestorage.app",
   messagingSenderId: "467203088520",
-  appId: "1:467203088520:web:2fd97e16884e15e6493f3d",
-  measurementId: "G-45YGMZXLG4"
+  appId: "1:467203088520:web:2fd97e16884e15e6493f3d"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -25,20 +24,49 @@ function generatePassword() {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST,PUT');
+  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,x-dev-key');
 
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const { action, password, username } = req.body;
+    const { action, username, password } = req.body;
+    const devKey = req.headers['x-dev-key'];
+    const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
 
-    // Verificar account (login normal)
+    if (action === 'create-account') {
+      if (!username || !password) {
+        return res.status(400).json({ error: "Username and password required" });
+      }
+
+      const accountsRef = ref(database, 'accounts');
+      const snapshot = await get(accountsRef);
+      const accounts = snapshot.exists() ? snapshot.val() : {};
+
+      for (const key in accounts) {
+        if (accounts[key].username === username) {
+          return res.status(400).json({ error: "Username already taken" });
+        }
+      }
+
+      const newId = Date.now().toString();
+      accounts[newId] = {
+        username,
+        password,
+        createdAt: new Date().toISOString()
+      };
+
+      await set(accountsRef, accounts);
+      return res.status(200).json({ success: true });
+    }
+
     if (action === 'verify-account') {
       if (!username || !password) {
         return res.status(400).json({ error: "Username and password required" });
@@ -48,73 +76,23 @@ export default async function handler(req, res) {
       const snapshot = await get(accountsRef);
       const accounts = snapshot.exists() ? snapshot.val() : {};
 
-      let foundAccount = null;
       for (const key in accounts) {
-        if (accounts[key]?.username === username && accounts[key]?.password === password) {
-          foundAccount = accounts[key];
-          break;
+        if (accounts[key].username === username && accounts[key].password === password) {
+          return res.status(200).json({ success: true });
         }
       }
 
-      if (!foundAccount) {
-        return res.status(401).json({ error: "Invalid username or password" });
-      }
-
-      return res.status(200).json({
-        success: true,
-        message: "Login successful"
-      });
+      return res.status(401).json({ error: "Invalid username or password" });
     }
 
-    // Verificar dev key
     if (action === 'verify-dev-key') {
-      const devKey = req.headers['x-dev-key'];
-      const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
-
       if (!validDevKeys.includes(devKey)) {
         return res.status(403).json({ error: "Invalid dev key" });
       }
-
-      return res.status(200).json({
-        success: true,
-        message: "Dev key verified"
-      });
-    }
-      if (!username || !password) {
-        return res.status(400).json({ error: "Username and password required" });
-      }
-
-      const accountsRef = ref(database, 'accounts');
-      const snapshot = await get(accountsRef);
-      const accounts = snapshot.exists() ? snapshot.val() : {};
-
-      // Verifica se username já existe
-      const usernameExists = Object.values(accounts).some(acc => acc?.username === username);
-      if (usernameExists) {
-        return res.status(400).json({ error: "Username already taken" });
-      }
-
-      const accountId = Date.now().toString();
-      accounts[accountId] = {
-        username,
-        password,
-        createdAt: new Date().toISOString(),
-        agreedToS: true
-      };
-
-      await set(accountsRef, accounts);
-
-      return res.status(200).json({
-        success: true,
-        message: "Account created successfully"
-      });
+      return res.status(200).json({ success: true });
     }
 
-    // Deletar account (para resetar/corrigir)
     if (action === 'delete-account') {
-      const devKey = req.headers['x-dev-key'];
-      const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
-
       if (!validDevKeys.includes(devKey)) {
         return res.status(403).json({ error: "Unauthorized" });
       }
@@ -127,53 +105,34 @@ export default async function handler(req, res) {
       const snapshot = await get(accountsRef);
       const accounts = snapshot.exists() ? snapshot.val() : {};
 
-      let deleted = false;
+      let found = false;
       for (const key in accounts) {
-        if (accounts[key]?.username === username) {
+        if (accounts[key].username === username) {
           delete accounts[key];
-          deleted = true;
+          found = true;
           break;
         }
       }
 
-      if (!deleted) {
+      if (!found) {
         return res.status(404).json({ error: "Account not found" });
       }
 
       await set(accountsRef, accounts);
-
-      return res.status(200).json({
-        success: true,
-        message: `Account ${username} deleted successfully`
-      });
+      return res.status(200).json({ success: true });
     }
 
-    // Listar accounts (dev panel)
     if (action === 'list-accounts') {
-      const devKey = req.headers['x-dev-key'];
-      const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
-
       if (!validDevKeys.includes(devKey)) {
         return res.status(403).json({ error: "Unauthorized" });
       }
 
       const accountsRef = ref(database, 'accounts');
       const snapshot = await get(accountsRef);
-
-      if (!snapshot.exists()) {
-        return res.status(200).json({ accounts: {} });
-      }
-
-      return res.status(200).json({
-        accounts: snapshot.val()
-      });
+      return res.status(200).json({ accounts: snapshot.exists() ? snapshot.val() : {} });
     }
 
-    // Criar nova senha (dev panel)
     if (action === 'create-password') {
-      const devKey = req.headers['x-dev-key'];
-      const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
-
       if (!validDevKeys.includes(devKey)) {
         return res.status(403).json({ error: "Unauthorized" });
       }
@@ -183,51 +142,20 @@ export default async function handler(req, res) {
       const snapshot = await get(passwordsRef);
       const passwords = snapshot.exists() ? snapshot.val() : {};
 
-      const newKey = Date.now().toString();
-      passwords[newKey] = {
+      passwords[Date.now().toString()] = {
         password: newPassword,
         used: false,
-        usedBy: null,
-        usedAt: null,
         createdAt: new Date().toISOString()
       };
 
       await set(passwordsRef, passwords);
-
-      return res.status(200).json({
-        success: true,
-        password: newPassword
-      });
-    }
-
-    // Listar senhas (dev panel)
-    if (action === 'list-passwords') {
-      const devKey = req.headers['x-dev-key'];
-      const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
-
-      if (!validDevKeys.includes(devKey)) {
-        return res.status(403).json({ error: "Unauthorized" });
-      }
-
-      const passwordsRef = ref(database, 'passwords');
-      const snapshot = await get(passwordsRef);
-
-      if (!snapshot.exists()) {
-        return res.status(200).json({ passwords: {} });
-      }
-
-      return res.status(200).json({
-        passwords: snapshot.val()
-      });
+      return res.status(200).json({ success: true, password: newPassword });
     }
 
     return res.status(400).json({ error: "Invalid action" });
 
   } catch (error) {
-    console.error("Firebase Error:", error);
-    return res.status(500).json({ 
-      error: "Server error",
-      details: error.message 
-    });
+    console.error(error);
+    return res.status(500).json({ error: "Server error", details: error.message });
   }
 }
