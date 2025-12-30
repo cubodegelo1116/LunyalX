@@ -324,6 +324,7 @@ button.plan-btn:hover { background:#64ccb8; }
 <button class="tab-btn" data-tab="dashboard">Dashboard</button>
 <button class="tab-btn" id="devPanelBtn" data-tab="devpanel" style="display:none;">Dev Panel</button>
 <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Discord</button>
+<button id="loginBtn" onclick="goLogin()">Login</button>
 <span id="userAvatar"></span>
 </nav>
 </header>
@@ -449,19 +450,12 @@ button.plan-btn:hover { background:#64ccb8; }
 <div id="userinfo" style="display:none;"></div>
 
 <div id="loginBox">
-<h3>Login</h3>
-<p style="opacity: 0.8; margin-bottom: 15px;">Enter your password to login</p>
-<input id="password" placeholder="Enter password" type="password">
-<button onclick="login()">Login</button>
+<h3>Create Account</h3>
+<p style="opacity: 0.8; margin-bottom: 15px;">Enter your Roblox username and create a password</p>
+<input id="createUsername" placeholder="Your Roblox username">
+<input id="createPassword" placeholder="Create a password" type="password">
+<button onclick="createAccount()">Create Account</button>
 <p id="loginmsg"></p>
-</div>
-
-<div id="setUsernameBox" style="display:none; margin-top: 20px;">
-<h3>Set Your Username</h3>
-<p style="opacity: 0.8; margin-bottom: 15px;">What's your Roblox username?</p>
-<input id="robloxUsername" placeholder="Your Roblox username">
-<button onclick="setUsername()">Confirm</button>
-<p id="usernamemsg"></p>
 </div>
 
 <div id="tosBox" style="display:none; margin-top: 20px;">
@@ -522,71 +516,66 @@ function toggleFaq(item){
 const devNicks = ["enzopiticopileko","RC7REMAKERYTT"];
 const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7","dev-V8LQ2-9DMA2-1KXQ0"];
 
-/* Login com Firebase */
-async function login() {
-    const password = document.getElementById("password").value.trim();
+/* Criar Account */
+async function createAccount() {
+    const username = document.getElementById("createUsername").value.trim();
+    const password = document.getElementById("createPassword").value.trim();
     const msg = document.getElementById("loginmsg");
 
-    if (!password) { 
-        msg.innerText = "Enter a password."; 
-        return; 
-    }
-
-    try {
-        msg.innerText = "Verifying...";
-        const res = await fetch(`/api/firebase-auth`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'login', password })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) { 
-            msg.innerText = data.error || "Login failed."; 
-            msg.style.color = "#ff6b6b";
-            return; 
-        }
-
-        sessionStorage.setItem('token', data.token);
-        msg.innerText = "✓ Login successful! Now set your username.";
-        msg.style.color = "#7fffd4";
-        
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("setUsernameBox").style.display = "block";
-
-    } catch(e) { 
-        msg.innerText = "Error connecting to API."; 
-        msg.style.color = "#ff6b6b";
-        console.error(e);
-    }
-}
-
-function setUsername() {
-    const username = document.getElementById("robloxUsername").value.trim();
-    const msg = document.getElementById("usernamemsg");
-
-    if (!username) {
-        msg.innerText = "Enter your username.";
+    if (!username || !password) {
+        msg.innerText = "Enter username and password.";
         msg.style.color = "#ff6b6b";
         return;
     }
 
-    sessionStorage.setItem('username', username);
-    
-    msg.innerText = "✓ Username set!";
-    msg.style.color = "#7fffd4";
-    
-    // Esconde set username, mostra ToS
-    document.getElementById("setUsernameBox").style.display = "none";
-    document.getElementById("tosBox").style.display = "block";
+    if (password.length < 6) {
+        msg.innerText = "Password must be at least 6 characters.";
+        msg.style.color = "#ff6b6b";
+        return;
+    }
+
+    try {
+        msg.innerText = "Creating account...";
+        msg.style.color = "#7fffd4";
+
+        const res = await fetch(`/api/firebase-auth`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                action: 'create-account',
+                username,
+                password
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            msg.innerText = data.error || "Error creating account.";
+            msg.style.color = "#ff6b6b";
+            return;
+        }
+
+        sessionStorage.setItem('username', username);
+        sessionStorage.setItem('password', password);
+
+        msg.innerText = "✓ Account created! Please read the Terms of Service.";
+        msg.style.color = "#7fffd4";
+        
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("tosBox").style.display = "block";
+
+    } catch(e) {
+        msg.innerText = "Error connecting to server.";
+        msg.style.color = "#ff6b6b";
+        console.error(e);
+    }
 }
 
 function agreeToS() {
     const username = sessionStorage.getItem('username');
     const userinfo = document.getElementById("userinfo");
     
-    // Esconde ToS, mostra dashboard
     document.getElementById("tosBox").style.display = "none";
     document.getElementById("loginBox").style.display = "none";
     
@@ -601,17 +590,15 @@ function agreeToS() {
 }
 
 function logout() {
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('username');
+    sessionStorage.clear();
     
     document.getElementById("userinfo").style.display = "none";
     document.getElementById("loginBox").style.display = "block";
-    document.getElementById("setUsernameBox").style.display = "none";
     document.getElementById("tosBox").style.display = "none";
-    document.getElementById("password").value = "";
-    document.getElementById("robloxUsername").value = "";
+    document.getElementById("createUsername").value = "";
+    document.getElementById("createPassword").value = "";
     document.getElementById("loginmsg").innerText = "";
-    document.getElementById("usernamemsg").innerText = "";
+    document.getElementById("loginBtn").style.display = "inline-block";
 }
 
 /* Dev Key */
@@ -639,6 +626,12 @@ function toggleTab(tabName) {
     document.querySelectorAll('.content').forEach(s => s.classList.remove('active'));
     
     document.getElementById(tabName).classList.add('active');
+}
+
+/* Go to Login */
+function goLogin() {
+    toggleTab('dashboard');
+    document.getElementById("loginBtn").style.display = "none";
 }
 </script>
 
