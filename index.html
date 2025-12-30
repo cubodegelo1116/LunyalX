@@ -256,7 +256,7 @@ h3 {margin-bottom:15px;}
 <h3>Choose an option:</h3>
 <button class="btn" onclick="showCreateAccount()">Create Account</button>
 <button class="btn" onclick="showLogin()">Login</button>
-<button class="btn" onclick="showDevLogin()">Dev Login</button>
+<button class="btn" id="devLoginBtn" onclick="showDevLogin()" style="display:none;">Dev Login</button>
 </div>
 
 <!-- Create Account -->
@@ -282,7 +282,7 @@ h3 {margin-bottom:15px;}
 <!-- Dev Login -->
 <div id="devBox" style="display:none;">
 <h3>Developer Login</h3>
-<p style="opacity:0.8; margin-bottom:10px;">Put Dev nick</p>
+<p style="opacity:0.8; margin-bottom:10px;">Username: RC7REMAKERYTT, enzopiticopileko, or T4lon0x</p>
 <input id="devUser" placeholder="Username">
 <input id="devKeyInput" placeholder="Dev Key" type="password">
 <button class="btn" onclick="devLoginFunc()">Dev Login</button>
@@ -368,6 +368,8 @@ function backMenu() {
     document.getElementById('devBox').style.display = 'none';
     document.getElementById('tosBox').style.display = 'none';
     document.getElementById('userBox').style.display = 'none';
+    document.getElementById('devLoginBtn').style.display = 'none';
+    document.getElementById('devUser').disabled = false;
     clearInputs();
 }
 
@@ -417,6 +419,7 @@ async function createAccount() {
 async function doLogin() {
     const user = document.getElementById('loginUser').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
+    const devNames = ["RC7REMAKERYTT", "enzopiticopileko", "T4lon0x"];
     
     if (!user || !pass) {msg('loginMsg', 'Enter username and password', 'error'); return;}
     
@@ -431,11 +434,21 @@ async function doLogin() {
         if (!res.ok) {msg('loginMsg', data.error || 'Error', 'error'); return;}
         
         sessionStorage.setItem('username', user);
-        msg('loginMsg', '✓ Logged! Read ToS', 'success');
-        setTimeout(() => {
+        
+        // Se for dev name, mostra botão de dev login
+        if (devNames.includes(user)) {
+            msg('loginMsg', '✓ Dev detected! Now enter dev key', 'success');
             document.getElementById('loginBox').style.display = 'none';
-            document.getElementById('tosBox').style.display = 'block';
-        }, 500);
+            document.getElementById('devBox').style.display = 'block';
+            document.getElementById('devUser').value = user;
+            document.getElementById('devUser').disabled = true;
+        } else {
+            msg('loginMsg', '✓ Logged! Read ToS', 'success');
+            setTimeout(() => {
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('tosBox').style.display = 'block';
+            }, 500);
+        }
     } catch(e) {msg('loginMsg', 'Error connecting', 'error');}
 }
 
@@ -443,7 +456,7 @@ async function doLogin() {
 async function devLoginFunc() {
     const user = document.getElementById('devUser').value.trim();
     const key = document.getElementById('devKeyInput').value.trim();
-    const devNames = ["RC7REMAKERYTT", "enzopiticopileko"];
+    const devNames = ["RC7REMAKERYTT", "enzopiticopileko", "T4lon0x"];
     
     if (!user || !key) {msg('devMsg', 'Enter username and dev key', 'error'); return;}
     if (!devNames.includes(user)) {msg('devMsg', 'Invalid username', 'error'); return;}
