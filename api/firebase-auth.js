@@ -26,9 +26,9 @@ export default async function handler(req, res) {
     return;
   }
 
-  const { action, password, username } = req.body;
-
   try {
+    const { action, password, username } = req.body;
+
     // Criar account
     if (action === 'create-account') {
       if (!username || !password) {
@@ -60,6 +60,9 @@ export default async function handler(req, res) {
         message: "Account created successfully"
       });
     }
+
+    // Verificar senha/login
+    if (action === 'login') {
       if (!password) {
         return res.status(400).json({ error: "Password required" });
       }
