@@ -104,8 +104,64 @@ export default async function handler(req, res) {
       });
     }
 
-    // Criar nova senha (dev panel)
-    if (action === 'create-password') {
+    // Deletar account (para resetar/corrigir)
+    if (action === 'delete-account') {
+      const devKey = req.headers['x-dev-key'];
+      const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
+
+      if (!validDevKeys.includes(devKey)) {
+        return res.status(403).json({ error: "Unauthorized" });
+      }
+
+      if (!username) {
+        return res.status(400).json({ error: "Username required" });
+      }
+
+      const accountsRef = ref(database, 'accounts');
+      const snapshot = await get(accountsRef);
+      const accounts = snapshot.exists() ? snapshot.val() : {};
+
+      let deleted = false;
+      for (const key in accounts) {
+        if (accounts[key].username === username) {
+          delete accounts[key];
+          deleted = true;
+          break;
+        }
+      }
+
+      if (!deleted) {
+        return res.status(404).json({ error: "Account not found" });
+      }
+
+      await set(accountsRef, accounts);
+
+      return res.status(200).json({
+        success: true,
+        message: `Account ${username} deleted successfully`
+      });
+    }
+
+    // Listar accounts (dev panel)
+    if (action === 'list-accounts') {
+      const devKey = req.headers['x-dev-key'];
+      const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
+
+      if (!validDevKeys.includes(devKey)) {
+        return res.status(403).json({ error: "Unauthorized" });
+      }
+
+      const accountsRef = ref(database, 'accounts');
+      const snapshot = await get(accountsRef);
+
+      if (!snapshot.exists()) {
+        return res.status(200).json({ accounts: {} });
+      }
+
+      return res.status(200).json({
+        accounts: snapshot.val()
+      });
+    }
       const devKey = req.headers['x-dev-key'];
       const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
 
