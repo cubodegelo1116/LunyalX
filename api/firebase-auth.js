@@ -15,6 +15,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
+function generatePassword() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -40,7 +49,7 @@ export default async function handler(req, res) {
       const accounts = snapshot.exists() ? snapshot.val() : {};
 
       // Verifica se username já existe
-      const usernameExists = Object.values(accounts).some(acc => acc.username === username);
+      const usernameExists = Object.values(accounts).some(acc => acc?.username === username);
       if (usernameExists) {
         return res.status(400).json({ error: "Username already taken" });
       }
@@ -50,7 +59,7 @@ export default async function handler(req, res) {
         username,
         password,
         createdAt: new Date().toISOString(),
-        agreedToS: false
+        agreedToS: true
       };
 
       await set(accountsRef, accounts);
@@ -58,49 +67,6 @@ export default async function handler(req, res) {
       return res.status(200).json({
         success: true,
         message: "Account created successfully"
-      });
-    }
-
-    // Verificar senha/login
-    if (action === 'login') {
-      if (!password) {
-        return res.status(400).json({ error: "Password required" });
-      }
-
-      const passwordsRef = ref(database, 'passwords');
-      const snapshot = await get(passwordsRef);
-
-      if (!snapshot.exists()) {
-        return res.status(401).json({ error: "No passwords available" });
-      }
-
-      const passwords = snapshot.val();
-      let foundPassword = null;
-      let passwordKey = null;
-
-      for (const key in passwords) {
-        if (passwords[key].password === password && !passwords[key].used) {
-          foundPassword = passwords[key];
-          passwordKey = key;
-          break;
-        }
-      }
-
-      if (!foundPassword) {
-        return res.status(401).json({ error: "Invalid or already used password" });
-      }
-
-      // Marca como usada
-      await update(ref(database, `passwords/${passwordKey}`), {
-        used: true,
-        usedBy: username || "Anonymous",
-        usedAt: new Date().toISOString()
-      });
-
-      return res.status(200).json({
-        success: true,
-        message: "Login successful",
-        token: Buffer.from(password).toString('base64')
       });
     }
 
@@ -123,7 +89,7 @@ export default async function handler(req, res) {
 
       let deleted = false;
       for (const key in accounts) {
-        if (accounts[key].username === username) {
+        if (accounts[key]?.username === username) {
           delete accounts[key];
           deleted = true;
           break;
@@ -162,6 +128,9 @@ export default async function handler(req, res) {
         accounts: snapshot.val()
       });
     }
+
+    // Criar nova senha (dev panel)
+    if (action === 'create-password') {
       const devKey = req.headers['x-dev-key'];
       const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
 
@@ -221,13 +190,4 @@ export default async function handler(req, res) {
       details: error.message 
     });
   }
-}
-
-function generatePassword() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
-  for (let i = 0; i < 8; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
 }
