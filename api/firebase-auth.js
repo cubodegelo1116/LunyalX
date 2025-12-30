@@ -29,8 +29,37 @@ export default async function handler(req, res) {
   const { action, password, username } = req.body;
 
   try {
-    // Verificar senha
-    if (action === 'login') {
+    // Criar account
+    if (action === 'create-account') {
+      if (!username || !password) {
+        return res.status(400).json({ error: "Username and password required" });
+      }
+
+      const accountsRef = ref(database, 'accounts');
+      const snapshot = await get(accountsRef);
+      const accounts = snapshot.exists() ? snapshot.val() : {};
+
+      // Verifica se username já existe
+      const usernameExists = Object.values(accounts).some(acc => acc.username === username);
+      if (usernameExists) {
+        return res.status(400).json({ error: "Username already taken" });
+      }
+
+      const accountId = Date.now().toString();
+      accounts[accountId] = {
+        username,
+        password,
+        createdAt: new Date().toISOString(),
+        agreedToS: false
+      };
+
+      await set(accountsRef, accounts);
+
+      return res.status(200).json({
+        success: true,
+        message: "Account created successfully"
+      });
+    }
       if (!password) {
         return res.status(400).json({ error: "Password required" });
       }
