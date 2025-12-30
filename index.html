@@ -8,14 +8,14 @@
 <style>
 * {margin:0; padding:0; box-sizing:border-box; user-select:none;}
 
+@keyframes fade {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+
 @keyframes floatUp {
     0%, 100% {transform: translateY(0);}
     50% {transform: translateY(-5px);}
-}
-
-@keyframes fade {
-    from {opacity:0; transform: translateY(8px);}
-    to {opacity:1; transform: translateY(0);}
 }
 
 body {
@@ -494,10 +494,14 @@ h3 {margin-bottom:15px;}
 
 <script>
 window.addEventListener('load', () => {
-    const user = sessionStorage.getItem('username');
+    const user = localStorage.getItem('username');
+    const isDev = localStorage.getItem('isDev');
     if (user) {
         showTab('dashboard');
         showUserPanel();
+        if (isDev === 'true') {
+            document.getElementById('devPanelTab').style.display = 'inline-block';
+        }
     }
 });
 
@@ -574,7 +578,7 @@ async function createAccount() {
         const data = await res.json();
         if (!res.ok) {msg('createMsg', data.error || 'Error', 'error'); return;}
         
-        sessionStorage.setItem('username', user);
+        localStorage.setItem('username', user);
         msg('createMsg', '✓ Created! Read ToS', 'success');
         setTimeout(() => {
             document.getElementById('createBox').style.display = 'none';
@@ -600,7 +604,7 @@ async function doLogin() {
         const data = await res.json();
         if (!res.ok) {msg('loginMsg', data.error || 'Error', 'error'); return;}
         
-        sessionStorage.setItem('username', user);
+        localStorage.setItem('username', user);
         
         if (devNames.includes(user)) {
             msg('loginMsg', '✓ Dev detected! Now enter dev key', 'success');
@@ -636,9 +640,9 @@ async function devLoginFunc() {
         const data = await res.json();
         if (!res.ok) {msg('devMsg', data.error || 'Invalid key', 'error'); return;}
         
-        sessionStorage.setItem('username', user);
-        sessionStorage.setItem('isDev', 'true');
-        sessionStorage.setItem('devKey', key);
+        localStorage.setItem('username', user);
+        localStorage.setItem('isDev', 'true');
+        localStorage.setItem('devKey', key);
         msg('devMsg', '✓ Dev access granted!', 'success');
         
         setTimeout(() => {
@@ -654,8 +658,8 @@ function agreeToS() {
 }
 
 function showUserPanel() {
-    const user = sessionStorage.getItem('username');
-    const isDev = sessionStorage.getItem('isDev');
+    const user = localStorage.getItem('username');
+    const isDev = localStorage.getItem('isDev');
     
     document.getElementById('mainMenu').style.display = 'none';
     document.getElementById('createBox').style.display = 'none';
@@ -672,7 +676,7 @@ function showUserPanel() {
 }
 
 async function loadAccounts() {
-    const key = sessionStorage.getItem('devKey');
+    const key = localStorage.getItem('devKey');
     const list = document.getElementById('accountsList');
     
     try {
@@ -703,7 +707,7 @@ async function loadAccounts() {
 
 async function delAccount(user) {
     if (!confirm(`Delete "${user}"?`)) return;
-    const key = sessionStorage.getItem('devKey');
+    const key = localStorage.getItem('devKey');
     
     try {
         const res = await fetch('/api/firebase-auth', {
@@ -719,7 +723,7 @@ async function delAccount(user) {
 }
 
 function logoutFunc() {
-    sessionStorage.clear();
+    localStorage.clear();
     document.getElementById('devPanelTab').style.display = 'none';
     document.getElementById('mainMenu').style.display = 'block';
     document.getElementById('createBox').style.display = 'none';
