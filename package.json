@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Lunyal X Server Side",
   "main": "index.html",
+  "type": "module",
   "dependencies": {
-    "node-fetch": "^2.6.7"
-  }
+    "firebase": "^10.7.0"
+  },
+  "devDependencies": {}
 }
