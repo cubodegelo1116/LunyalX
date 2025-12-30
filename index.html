@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lunyal X Server Side</title>
 <link rel="icon" type="image/png" href="https://cdn.discordapp.com/icons/1437834972496138362/d9cf5ac311216a794e297a3b3d388755.webp?size=128">
-
 <style>
 * {margin:0; padding:0; box-sizing:border-box; user-select:none;}
 body {
@@ -15,61 +14,48 @@ body {
     min-height:100vh;
     display:flex;
     flex-direction:column;
-    align-items:center;
 }
 
 header {
     width:100%;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
     padding:15px 30px;
     background:rgba(255,255,255,0.05);
     border-bottom:1px solid rgba(255,255,255,0.08);
     backdrop-filter:blur(12px);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
-.site-logo {
+.logo img {
     width: 48px;
     height: 48px;
     border-radius: 12px;
     cursor: pointer;
-    transition: transform 0.25s ease;
-    box-shadow:0 0 12px rgba(0,0,0,0.6);
-}
-.site-logo:hover {
-    transform: translateY(-5px);
+    transition: 0.25s;
 }
 
-nav {display:flex; align-items:center; gap:20px;}
-
+nav {display:flex; gap:15px;}
 nav button {
     background:rgba(255,255,255,0.06);
     border:1px solid rgba(255,255,255,0.15);
     color:#fff;
     padding:8px 14px;
-    font-size:0.95rem;
     border-radius:8px;
     cursor:pointer;
     transition:0.25s;
 }
-nav button:hover {
-    background:rgba(122,255,210,0.2);
-    border-color:#7fffd4;
-    box-shadow:0 0 10px rgba(127,255,212,0.5);
-}
-nav button.active {
-    background:rgba(122,255,210,0.2);
-    border-color:#7fffd4;
-}
+nav button:hover {background:rgba(122,255,210,0.2); border-color:#7fffd4;}
+nav button.active {background:rgba(122,255,210,0.2); border-color:#7fffd4;}
 
 main {
     flex:1;
     width:100%;
     max-width:1100px;
+    margin:0 auto;
     padding:40px 20px;
 }
 
@@ -78,24 +64,31 @@ main {
     background:rgba(255,255,255,0.07);
     padding:30px;
     border-radius:15px;
-    margin-top:20px;
     box-shadow:0 0 15px rgba(0,0,0,0.25);
     backdrop-filter:blur(10px);
     animation:fade 0.4s ease;
 }
-.content.active { display:block; }
+.content.active {display:block;}
 
-@keyframes fade {
-    from {opacity:0; transform:translateY(8px);}
-    to {opacity:1; transform:translateY(0);}
-}
+@keyframes fade {from {opacity:0;} to {opacity:1;}}
 
-.home-subtitle {
-    font-size: 1.3rem;
-    color: #7fffd4;
-    margin-top: 10px;
-    font-weight: 600;
+.btn {
+    background:#7fffd4;
+    color:#000;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.25s;
+    margin-right:10px;
+    margin-bottom:10px;
 }
+.btn:hover {background:#64ccb8;}
+.btn.secondary {background:rgba(255,255,255,0.1); color:#fff;}
+.btn.secondary:hover {background:rgba(255,255,255,0.2);}
+.btn.danger {background:#ff6b6b;}
+.btn.danger:hover {background:#ff5252;}
 
 input {
     padding:9px 12px;
@@ -105,200 +98,63 @@ input {
     background:rgba(255,255,255,0.12);
     color:white;
     outline:none;
-    transition:0.25s;
-    margin-bottom: 10px;
-}
-input:focus {
-    border-color:#7fffd4;
-    box-shadow:0 0 8px rgba(127,255,212,0.4);
-}
-
-.plan-btn {
-    background:#7fffd4;
-    color:#000;
-    border:none;
-    padding:10px 18px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:600;
-    transition:0.25s;
-    margin-right: 10px;
-    margin-bottom: 10px;
-}
-.plan-btn:hover { background:#64ccb8; }
-.plan-btn.secondary {
-    background: rgba(255,255,255,0.1);
-    color: #fff;
-}
-.plan-btn.secondary:hover {
-    background: rgba(255,255,255,0.2);
-}
-
-.tos-box {
-    background: rgba(255,255,255,0.07);
-    padding: 25px;
-    border-radius: 15px;
-    margin-top: 20px;
-    border: 1px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(8px);
-}
-
-.tos-box ul {
-    list-style: none;
-    padding-left: 0;
-    font-size: 1.07rem;
-    line-height: 1.75rem;
-}
-
-.tos-box li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-}
-
-.badge {
-    padding: 3px 10px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 0.9rem;
-}
-
-.badge.red {
-    background: rgba(255, 50, 50, 0.25);
-    border: 1px solid rgba(255, 30, 30, 0.45);
-}
-
-.badge.yellow {
-    background: rgba(255, 210, 50, 0.25);
-    border: 1px solid rgba(255, 210, 0, 0.4);
-}
-
-.badge.green {
-    background: rgba(80, 255, 160, 0.25);
-    border: 1px solid rgba(60, 255, 140, 0.45);
-}
-
-.plans-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.plan {
-    background:rgba(255,255,255,0.08);
-    padding:25px;
-    border-radius:12px;
-    border:1px solid rgba(255,255,255,0.12);
-    box-shadow:0 0 8px rgba(0,0,0,0.25);
-    transition:0.3s;
-}
-.plan:hover {
-    transform:translateY(-3px);
-    box-shadow:0 8px 20px rgba(0,0,0,0.3);
-}
-
-.showcase {
-    background: rgba(122,255,210,0.15);
-    border: 1px solid rgba(122,255,210,0.3);
-    padding: 12px;
-    border-radius: 8px;
-    margin: 12px 0;
-    font-size: 0.9rem;
-    line-height: 1.6;
-}
-
-.showcase-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.showcase-card {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 15px;
-    border-radius: 12px;
-    transition: 0.3s;
-    cursor: pointer;
-}
-
-.showcase-card:hover {
-    background: rgba(255,255,255,0.12);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-}
-
-.showcase-placeholder {
-    width: 100%;
-    height: 180px;
-    background: rgba(122,255,210,0.15);
-    border: 2px dashed rgba(122,255,210,0.3);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255,255,255,0.5);
-    font-size: 0.9rem;
-}
-
-.faq-item {
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.1);
-    padding:15px;
-    border-radius:12px;
     margin-bottom:10px;
-    cursor:pointer;
-    transition:0.25s;
 }
-.faq-item:hover {
-    background:rgba(255,255,255,0.12);
-}
-
-.faq-answer {
-    max-height:0;
-    overflow:hidden;
-    opacity:0;
-    transition:max-height .35s ease, opacity .35s ease;
-    padding-left:5px;
-}
-.faq-item.open .faq-answer {
-    max-height:200px;
-    opacity:1;
-    margin-top:10px;
-}
+input:focus {border-color:#7fffd4; box-shadow:0 0 8px rgba(127,255,212,0.4);}
 
 .msg {
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 8px;
-    display: none;
+    margin-top:10px;
+    padding:10px;
+    border-radius:8px;
+    display:none;
 }
-.msg.show { display: block; }
-.msg.success { background: rgba(80, 255, 160, 0.2); color: #7fffd4; }
-.msg.error { background: rgba(255, 50, 50, 0.2); color: #ff6b6b; }
-</style>
+.msg.show {display:block;}
+.msg.success {background:rgba(80, 255, 160, 0.2); color:#7fffd4;}
+.msg.error {background:rgba(255, 50, 50, 0.2); color:#ff6b6b;}
 
+h1 {margin-bottom:10px;}
+h3 {margin-bottom:15px;}
+
+.tos-box {background:rgba(255,255,255,0.07); padding:20px; border-radius:15px; margin-top:20px;}
+.tos-box ul {list-style:none; font-size:1rem; line-height:1.7rem;}
+.tos-box li {display:flex; align-items:center; gap:10px; margin-bottom:8px;}
+
+.badge {padding:3px 10px; border-radius:8px; font-weight:700; font-size:0.9rem;}
+.badge.red {background:rgba(255, 50, 50, 0.25); border:1px solid rgba(255, 30, 30, 0.45);}
+.badge.yellow {background:rgba(255, 210, 50, 0.25); border:1px solid rgba(255, 210, 0, 0.4);}
+.badge.green {background:rgba(80, 255, 160, 0.25); border:1px solid rgba(60, 255, 140, 0.45);}
+
+.plan-grid {display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px; margin-top:20px;}
+.plan {background:rgba(255,255,255,0.08); padding:25px; border-radius:12px; border:1px solid rgba(255,255,255,0.12);}
+.plan:hover {transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,0.3);}
+
+.showcase-grid {display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:20px; margin-top:20px;}
+.showcase-card {background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:15px; border-radius:12px;}
+.showcase-placeholder {width:100%; height:180px; background:rgba(122,255,210,0.15); border:2px dashed rgba(122,255,210,0.3); border-radius:8px; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.5);}
+
+.faq-item {background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:15px; border-radius:12px; margin-bottom:10px; cursor:pointer;}
+.faq-item:hover {background:rgba(255,255,255,0.12);}
+.faq-answer {max-height:0; overflow:hidden; opacity:0; transition:0.35s;}
+.faq-item.open .faq-answer {max-height:200px; opacity:1; margin-top:10px;}
+
+.account-list {max-height:500px; overflow-y:auto; margin-top:20px;}
+.account-item {background:rgba(255,255,255,0.05); padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;}
+</style>
 </head>
 <body>
 
 <header>
 <div class="logo">
-    <img src="https://cdn.discordapp.com/icons/1437834972496138362/d9cf5ac311216a794e297a3b3d388755.webp?size=64"
-         class="site-logo"
-         onclick="goPlans()">
+    <img src="https://cdn.discordapp.com/icons/1437834972496138362/d9cf5ac311216a794e297a3b3d388755.webp?size=64" onclick="showTab('home')">
 </div>
-
 <nav>
-<button class="nav-btn active" data-tab="home">Home</button>
-<button class="nav-btn" data-tab="tos">TOS</button>
-<button class="nav-btn" data-tab="plans">Plans</button>
-<button class="nav-btn" data-tab="showcases">Showcases</button>
-<button class="nav-btn" data-tab="faq">FAQ</button>
-<button class="nav-btn" data-tab="dashboard">Dashboard</button>
-<button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Discord</button>
+    <button class="nav-btn active" data-tab="home">Home</button>
+    <button class="nav-btn" data-tab="tos">TOS</button>
+    <button class="nav-btn" data-tab="plans">Plans</button>
+    <button class="nav-btn" data-tab="showcases">Showcases</button>
+    <button class="nav-btn" data-tab="faq">FAQ</button>
+    <button class="nav-btn" data-tab="dashboard">Dashboard</button>
+    <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Discord</button>
 </nav>
 </header>
 
@@ -307,17 +163,15 @@ input:focus {
 <!-- HOME -->
 <div class="content active" id="home">
 <h1>Lunyal X Server Side</h1>
-<p class="home-subtitle">The Best Cheapest Serverside</p>
-
-<h1 style="margin-top: 30px;">The New Best ServerSide?</h1>
-<p class="home-subtitle">Join our community and experience the difference</p>
-
-<button class="plan-btn" onclick="showTab('showcases')" style="margin-top: 20px;">Showcases</button>
+<p style="color:#7fffd4; font-size:1.2rem; margin-bottom:30px;">The Best Cheapest Serverside</p>
+<h1>The New Best ServerSide?</h1>
+<p style="color:#7fffd4; font-size:1.2rem; margin-top:10px;">Join our community and experience the difference</p>
+<button class="btn" onclick="showTab('showcases')" style="margin-top:20px;">Showcases</button>
 </div>
 
 <!-- TOS -->
 <div class="content" id="tos">
-<h1>Terms of Service — Free Plan</h1>
+<h1>Terms of Service</h1>
 <div class="tos-box">
 <ul>
 <li><span class="badge red">❌</span> No Map Changing</li>
@@ -325,14 +179,12 @@ input:focus {
 <li><span class="badge red">❌</span> No HappyHub or K00pGui</li>
 <li><span class="badge red">❌</span> No Toxic Behavior</li>
 <li><span class="badge red">❌</span> No Banning / Kicking Players</li>
-
 <li><span class="badge yellow">🟡</span> No Troll GUIs</li>
 <li><span class="badge yellow">🟡</span> No External Executor Requirements</li>
-
 <li><span class="badge green">🟢</span> Abuse Allowed</li>
 <li><span class="badge green">🟢</span> Abusive Scripts Allowed</li>
 <li><span class="badge green">🟢</span> Killing Players Allowed</li>
-<li><span class="badge green">🟢</span> Giving Require to Friends or Random Players Allowed</li>
+<li><span class="badge green">🟢</span> Giving Require to Friends Allowed</li>
 </ul>
 </div>
 </div>
@@ -340,29 +192,18 @@ input:focus {
 <!-- PLANS -->
 <div class="content" id="plans">
 <h1>Plans</h1>
-<div class="plans-container">
+<div class="plan-grid">
 <div class="plan">
 <h2>Free Plan</h2>
 <p>Access via Discord and whitelist.</p>
-<div class="showcase">
-<strong>What's Included:</strong><br>
-✓ Full script access<br>
-✓ Community support<br>
-✓ Regular updates
+<p style="background:rgba(122,255,210,0.15); padding:10px; border-radius:8px; margin:10px 0; font-size:0.9rem;">✓ Full script access<br>✓ Community support<br>✓ Regular updates</p>
+<button class="btn" onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Join Discord</button>
 </div>
-<button class="plan-btn" onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Join Discord</button>
-</div>
-
 <div class="plan">
 <h2>Standard Plan</h2>
 <p>Premium features coming soon.</p>
-<div class="showcase">
-<strong>Coming Soon:</strong><br>
-✓ Priority support<br>
-✓ Exclusive scripts<br>
-✓ Early access features
-</div>
-<button class="plan-btn" style="opacity: 0.5; cursor: not-allowed;">Coming Soon</button>
+<p style="background:rgba(122,255,210,0.15); padding:10px; border-radius:8px; margin:10px 0; font-size:0.9rem;">✓ Priority support<br>✓ Exclusive scripts<br>✓ Early access</p>
+<button class="btn" style="opacity:0.5; cursor:not-allowed;">Coming Soon</button>
 </div>
 </div>
 </div>
@@ -370,19 +211,17 @@ input:focus {
 <!-- SHOWCASES -->
 <div class="content" id="showcases">
 <h1>Showcases</h1>
-<p style="margin-bottom: 30px; opacity: 0.9;">This is some of the best scripts/exploits platforms in the community. Have any showcases with 10k+ views? Let us know and we will add it.</p>
-
+<p style="margin-bottom:20px;">The best scripts in the community. Have showcases with 10k+ views? Let us know!</p>
 <div class="showcase-grid">
 <div class="showcase-card">
 <div class="showcase-placeholder"></div>
-<p style="margin-top: 15px; font-weight: 600;">Nothing</p>
-<p style="opacity: 0.7; font-size: 0.9rem;">Nil</p>
+<p style="margin-top:15px; font-weight:600;">Coming Soon</p>
+<p style="opacity:0.7; font-size:0.9rem;">Waiting for submissions</p>
 </div>
-
 <div class="showcase-card">
 <div class="showcase-placeholder"></div>
-<p style="margin-top: 15px; font-weight: 600;">Nothing</p>
-<p style="opacity: 0.7; font-size: 0.9rem;">Nil</p>
+<p style="margin-top:15px; font-weight:600;">Coming Soon</p>
+<p style="opacity:0.7; font-size:0.9rem;">Waiting for submissions</p>
 </div>
 </div>
 </div>
@@ -390,22 +229,18 @@ input:focus {
 <!-- FAQ -->
 <div class="content" id="faq">
 <h1>FAQ</h1>
-
 <div class="faq-item" onclick="toggleFaq(this)">
     <h3>What is Lunyal X?</h3>
     <div class="faq-answer">Lunyal X is a Roblox server-side script hub.</div>
 </div>
-
 <div class="faq-item" onclick="toggleFaq(this)">
     <h3>Is it reliable?</h3>
     <div class="faq-answer">Yes, it's maintained by trusted developers.</div>
 </div>
-
 <div class="faq-item" onclick="toggleFaq(this)">
     <h3>How do I purchase?</h3>
     <div class="faq-answer">Currently only Roblox (Robux) payment is accepted.</div>
 </div>
-
 <div class="faq-item" onclick="toggleFaq(this)">
     <h3>Payment methods?</h3>
     <div class="faq-answer">Robux only.</div>
@@ -415,37 +250,48 @@ input:focus {
 <!-- DASHBOARD -->
 <div class="content" id="dashboard">
 <h1>Dashboard</h1>
-<div id="userinfo" style="display:none;"></div>
 
 <!-- Menu Principal -->
-<div id="mainMenu" style="display:block;">
-<h3 style="margin-bottom: 20px;">Choose an option:</h3>
-<button class="plan-btn" onclick="showCreateAccount()">Create Account</button>
-<button class="plan-btn" onclick="showLoginForm()">Login</button>
+<div id="mainMenu">
+<h3>Choose an option:</h3>
+<button class="btn" onclick="showCreateAccount()">Create Account</button>
+<button class="btn" onclick="showLogin()">Login</button>
+<button class="btn" onclick="showDevLogin()">Dev Login</button>
 </div>
 
 <!-- Create Account -->
-<div id="createAccountBox" style="display:none;">
+<div id="createBox" style="display:none;">
 <h3>Create Account</h3>
-<input id="createUsername" placeholder="Your username">
-<input id="createPassword" placeholder="Your password" type="password">
-<button class="plan-btn" onclick="createAccount()">Create</button>
-<button class="plan-btn secondary" onclick="backToMenu()">Back</button>
+<input id="createUser" placeholder="Username">
+<input id="createPass" placeholder="Password" type="password">
+<button class="btn" onclick="createAccount()">Create</button>
+<button class="btn secondary" onclick="backMenu()">Back</button>
 <div id="createMsg" class="msg"></div>
 </div>
 
-<!-- Login Form -->
-<div id="loginFormBox" style="display:none;">
+<!-- Login -->
+<div id="loginBox" style="display:none;">
 <h3>Login</h3>
-<input id="loginUsername" placeholder="Your username">
-<input id="loginPassword" placeholder="Your password" type="password">
-<button class="plan-btn" onclick="normalLogin()">Login</button>
-<button class="plan-btn secondary" onclick="backToMenu()">Back</button>
+<input id="loginUser" placeholder="Username">
+<input id="loginPass" placeholder="Password" type="password">
+<button class="btn" onclick="doLogin()">Login</button>
+<button class="btn secondary" onclick="backMenu()">Back</button>
 <div id="loginMsg" class="msg"></div>
 </div>
 
-<!-- ToS -->
-<div id="tosAccept" style="display:none;">
+<!-- Dev Login -->
+<div id="devBox" style="display:none;">
+<h3>Developer Login</h3>
+<p style="opacity:0.8; margin-bottom:10px;">Username: RC7REMAKERYTT or enzopiticopileko</p>
+<input id="devUser" placeholder="Username">
+<input id="devKeyInput" placeholder="Dev Key" type="password">
+<button class="btn" onclick="devLoginFunc()">Dev Login</button>
+<button class="btn secondary" onclick="backMenu()">Back</button>
+<div id="devMsg" class="msg"></div>
+</div>
+
+<!-- ToS Accept -->
+<div id="tosBox" style="display:none;">
 <h1>Terms of Service</h1>
 <div class="tos-box">
 <ul>
@@ -454,203 +300,253 @@ input:focus {
 <li><span class="badge red">❌</span> No HappyHub or K00pGui</li>
 <li><span class="badge red">❌</span> No Toxic Behavior</li>
 <li><span class="badge red">❌</span> No Banning / Kicking Players</li>
-
 <li><span class="badge yellow">🟡</span> No Troll GUIs</li>
 <li><span class="badge yellow">🟡</span> No External Executor Requirements</li>
-
 <li><span class="badge green">🟢</span> Abuse Allowed</li>
 <li><span class="badge green">🟢</span> Abusive Scripts Allowed</li>
 <li><span class="badge green">🟢</span> Killing Players Allowed</li>
-<li><span class="badge green">🟢</span> Giving Require to Friends or Random Players Allowed</li>
+<li><span class="badge green">🟢</span> Giving Require to Friends Allowed</li>
 </ul>
 </div>
-<button class="plan-btn" onclick="agreeToS()" style="margin-top: 20px;">I Agree</button>
+<button class="btn" onclick="agreeToS()" style="margin-top:20px;">I Agree</button>
+</div>
+
+<!-- User Info -->
+<div id="userBox" style="display:none;">
+<div style="background:rgba(122,255,210,0.1); padding:20px; border-radius:12px; border:1px solid rgba(122,255,210,0.3);">
+<h2 id="userWelcome"></h2>
+<p style="margin:10px 0; opacity:0.9;">You are logged in.</p>
+<button class="btn danger" onclick="logoutFunc()">Logout</button>
+</div>
+<div id="devPanelBox" style="display:none; margin-top:20px;">
+<h3>Dev Panel - Account Management</h3>
+<button class="btn" onclick="loadAccounts()">Load Accounts</button>
+<div id="accountsList" class="account-list"></div>
 </div>
 </div>
 
-<!-- DEV PANEL -->
-<div class="content" id="devpanel">
-<h1>Dev Panel</h1>
-<p>Enter dev-key:</p>
-<input id="devkey" placeholder="dev-XXXXX-XXXXX-XXXXX">
-<button class="plan-btn" onclick="checkDev()">Access Panel</button>
-<p id="devmsg"></p>
 </div>
 
 </main>
 
 <script>
 // TAB SYSTEM
-const navBtns = document.querySelectorAll('.nav-btn');
-const contents = document.querySelectorAll('.content');
-
-navBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        navBtns.forEach(b => b.classList.remove('active'));
-        contents.forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(btn.dataset.tab).classList.add('active');
-    });
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => showTab(btn.dataset.tab));
 });
 
 function showTab(tabName) {
-    navBtns.forEach(b => b.classList.remove('active'));
-    contents.forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
     document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
     document.getElementById(tabName).classList.add('active');
 }
 
 // FAQ
-function toggleFaq(item) {
-    item.classList.toggle('open');
-}
+function toggleFaq(item) {item.classList.toggle('open');}
 
-// DASHBOARD FUNCTIONS
+// DASHBOARD
 function showCreateAccount() {
     document.getElementById('mainMenu').style.display = 'none';
-    document.getElementById('createAccountBox').style.display = 'block';
+    document.getElementById('createBox').style.display = 'block';
 }
 
-function showLoginForm() {
+function showLogin() {
     document.getElementById('mainMenu').style.display = 'none';
-    document.getElementById('loginFormBox').style.display = 'block';
+    document.getElementById('loginBox').style.display = 'block';
 }
 
-function backToMenu() {
+function showDevLogin() {
+    document.getElementById('mainMenu').style.display = 'none';
+    document.getElementById('devBox').style.display = 'block';
+}
+
+function backMenu() {
     document.getElementById('mainMenu').style.display = 'block';
-    document.getElementById('createAccountBox').style.display = 'none';
-    document.getElementById('loginFormBox').style.display = 'none';
-    document.getElementById('tosAccept').style.display = 'none';
-    document.getElementById('userinfo').style.display = 'none';
-    document.getElementById('createUsername').value = '';
-    document.getElementById('createPassword').value = '';
-    document.getElementById('loginUsername').value = '';
-    document.getElementById('loginPassword').value = '';
-    document.getElementById('createMsg').textContent = '';
-    document.getElementById('loginMsg').textContent = '';
+    document.getElementById('createBox').style.display = 'none';
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('devBox').style.display = 'none';
+    document.getElementById('tosBox').style.display = 'none';
+    document.getElementById('userBox').style.display = 'none';
+    clearInputs();
 }
 
+function clearInputs() {
+    document.getElementById('createUser').value = '';
+    document.getElementById('createPass').value = '';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('devUser').value = '';
+    document.getElementById('devKeyInput').value = '';
+}
+
+function msg(elementId, text, type) {
+    const el = document.getElementById(elementId);
+    el.textContent = text;
+    el.className = `msg show ${type}`;
+}
+
+// CREATE ACCOUNT
 async function createAccount() {
-    const username = document.getElementById('createUsername').value.trim();
-    const password = document.getElementById('createPassword').value.trim();
-    const msg = document.getElementById('createMsg');
-
-    if (!username || !password) {
-        showMsg(msg, 'Enter username and password', 'error');
-        return;
-    }
-
-    if (password.length < 6) {
-        showMsg(msg, 'Password must be at least 6 characters', 'error');
-        return;
-    }
-
-    try {
-        showMsg(msg, 'Creating account...', 'success');
-        const res = await fetch('/api/firebase-auth', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'create-account', username, password })
-        });
-
-        const data = await res.json();
-        if (!res.ok) {
-            showMsg(msg, data.error || 'Error creating account', 'error');
-            return;
-        }
-
-        sessionStorage.setItem('username', username);
-        showMsg(msg, '✓ Account created! Please read the Terms of Service', 'success');
-        
-        setTimeout(() => {
-            document.getElementById('createAccountBox').style.display = 'none';
-            document.getElementById('tosAccept').style.display = 'block';
-        }, 500);
-    } catch(e) {
-        showMsg(msg, 'Error connecting to server', 'error');
-    }
-}
-
-async function normalLogin() {
-    const username = document.getElementById('loginUsername').value.trim();
-    const password = document.getElementById('loginPassword').value.trim();
-    const msg = document.getElementById('loginMsg');
-
-    if (!username || !password) {
-        showMsg(msg, 'Enter username and password', 'error');
-        return;
-    }
-
-    try {
-        showMsg(msg, 'Logging in...', 'success');
-        const res = await fetch('/api/firebase-auth', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'verify-account', username, password })
-        });
-
-        const data = await res.json();
-        if (!res.ok) {
-            showMsg(msg, data.error || 'Login failed', 'error');
-            return;
-        }
-
-        sessionStorage.setItem('username', username);
-        showMsg(msg, '✓ Login successful! Please read the Terms of Service', 'success');
-        
-        setTimeout(() => {
-            document.getElementById('loginFormBox').style.display = 'none';
-            document.getElementById('tosAccept').style.display = 'block';
-        }, 500);
-    } catch(e) {
-        showMsg(msg, 'Error connecting to server', 'error');
-    }
-}
-
-function agreeToS() {
-    const username = sessionStorage.getItem('username');
-    document.getElementById('tosAccept').style.display = 'none';
+    const user = document.getElementById('createUser').value.trim();
+    const pass = document.getElementById('createPass').value.trim();
     
-    const userinfo = document.getElementById('userinfo');
-    userinfo.innerHTML = `
-        <div style="background: rgba(122,255,210,0.1); padding: 20px; border-radius: 12px; border: 1px solid rgba(122,255,210,0.3);">
-            <h2>Welcome, ${username}! 🎉</h2>
-            <p style="margin: 10px 0; opacity: 0.9;">You are now logged in.</p>
-            <button class="plan-btn" onclick="logout()" style="background: #ff6b6b;">Logout</button>
-        </div>
-    `;
-    userinfo.style.display = 'block';
+    if (!user || !pass) {msg('createMsg', 'Enter username and password', 'error'); return;}
+    if (pass.length < 6) {msg('createMsg', 'Password must be 6+ characters', 'error'); return;}
+    
+    try {
+        msg('createMsg', 'Creating...', 'success');
+        const res = await fetch('/api/firebase-auth', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({action: 'create-account', username: user, password: pass})
+        });
+        const data = await res.json();
+        if (!res.ok) {msg('createMsg', data.error || 'Error', 'error'); return;}
+        
+        sessionStorage.setItem('username', user);
+        msg('createMsg', '✓ Created! Read ToS', 'success');
+        setTimeout(() => {
+            document.getElementById('createBox').style.display = 'none';
+            document.getElementById('tosBox').style.display = 'block';
+        }, 500);
+    } catch(e) {msg('createMsg', 'Error connecting', 'error');}
 }
 
-function logout() {
-    sessionStorage.clear();
-    backToMenu();
+// LOGIN
+async function doLogin() {
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+    
+    if (!user || !pass) {msg('loginMsg', 'Enter username and password', 'error'); return;}
+    
+    try {
+        msg('loginMsg', 'Logging in...', 'success');
+        const res = await fetch('/api/firebase-auth', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({action: 'verify-account', username: user, password: pass})
+        });
+        const data = await res.json();
+        if (!res.ok) {msg('loginMsg', data.error || 'Error', 'error'); return;}
+        
+        sessionStorage.setItem('username', user);
+        msg('loginMsg', '✓ Logged! Read ToS', 'success');
+        setTimeout(() => {
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('tosBox').style.display = 'block';
+        }, 500);
+    } catch(e) {msg('loginMsg', 'Error connecting', 'error');}
 }
 
-function showMsg(element, text, type) {
-    element.textContent = text;
-    element.className = `msg show ${type}`;
+// DEV LOGIN
+async function devLoginFunc() {
+    const user = document.getElementById('devUser').value.trim();
+    const key = document.getElementById('devKeyInput').value.trim();
+    const devNames = ["RC7REMAKERYTT", "enzopiticopileko"];
+    
+    if (!user || !key) {msg('devMsg', 'Enter username and dev key', 'error'); return;}
+    if (!devNames.includes(user)) {msg('devMsg', 'Invalid username', 'error'); return;}
+    
+    try {
+        msg('devMsg', 'Verifying...', 'success');
+        const res = await fetch('/api/firebase-auth', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'x-dev-key': key},
+            body: JSON.stringify({action: 'verify-dev-key'})
+        });
+        const data = await res.json();
+        if (!res.ok) {msg('devMsg', data.error || 'Invalid key', 'error'); return;}
+        
+        sessionStorage.setItem('username', user);
+        sessionStorage.setItem('isDev', 'true');
+        sessionStorage.setItem('devKey', key);
+        msg('devMsg', '✓ Dev access granted!', 'success');
+        
+        setTimeout(() => {
+            document.getElementById('devBox').style.display = 'none';
+            showUserPanel();
+        }, 500);
+    } catch(e) {msg('devMsg', 'Error connecting', 'error');}
+}
+
+// ToS ACCEPT
+function agreeToS() {
+    document.getElementById('tosBox').style.display = 'none';
+    showUserPanel();
+}
+
+function showUserPanel() {
+    const user = sessionStorage.getItem('username');
+    const isDev = sessionStorage.getItem('isDev');
+    
+    document.getElementById('mainMenu').style.display = 'none';
+    document.getElementById('createBox').style.display = 'none';
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('devBox').style.display = 'none';
+    document.getElementById('tosBox').style.display = 'none';
+    document.getElementById('userBox').style.display = 'block';
+    
+    document.getElementById('userWelcome').innerText = `Welcome, ${user}! 🎉`;
+    
+    if (isDev === 'true') {
+        document.getElementById('devPanelBox').style.display = 'block';
+    } else {
+        document.getElementById('devPanelBox').style.display = 'none';
+    }
 }
 
 // DEV PANEL
-const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7","dev-V8LQ2-9DMA2-1KXQ0"];
-
-function checkDev() {
-    const key = document.getElementById("devkey").value.trim();
-    const msg = document.getElementById("devmsg");
-
-    if (validDevKeys.includes(key)) {
-        msg.innerText = "✓ Access granted.";
-        msg.style.color = "#7fffd4";
-    } else { 
-        msg.innerText = "✗ Invalid dev key.";
-        msg.style.color = "#ff6b6b";
-    }
+async function loadAccounts() {
+    const key = sessionStorage.getItem('devKey');
+    const list = document.getElementById('accountsList');
+    
+    try {
+        list.innerText = 'Loading...';
+        const res = await fetch('/api/firebase-auth', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'x-dev-key': key},
+            body: JSON.stringify({action: 'list-accounts'})
+        });
+        const data = await res.json();
+        if (!res.ok) {list.innerText = 'Error loading'; return;}
+        
+        const accs = data.accounts || {};
+        if (Object.keys(accs).length === 0) {list.innerHTML = '<p style="opacity:0.8;">No accounts</p>'; return;}
+        
+        let html = '';
+        for (const k in accs) {
+            const a = accs[k];
+            const d = new Date(a.createdAt).toLocaleDateString();
+            html += `<div class="account-item">
+                <div><strong>${a.username}</strong><p style="opacity:0.7; font-size:0.9rem;">Created: ${d}</p></div>
+                <button class="btn danger" style="padding:6px 12px;" onclick="delAccount('${a.username}')">Delete</button>
+            </div>`;
+        }
+        list.innerHTML = html;
+    } catch(e) {list.innerText = 'Error';}
 }
 
-// GO TO PLANS
-function goPlans() {
-    showTab('plans');
+async function delAccount(user) {
+    if (!confirm(`Delete "${user}"?`)) return;
+    const key = sessionStorage.getItem('devKey');
+    
+    try {
+        const res = await fetch('/api/firebase-auth', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'x-dev-key': key},
+            body: JSON.stringify({action: 'delete-account', username: user})
+        });
+        const data = await res.json();
+        if (!res.ok) {alert(data.error || 'Error'); return;}
+        alert('✓ Deleted!');
+        loadAccounts();
+    } catch(e) {alert('Error');}
+}
+
+function logoutFunc() {
+    sessionStorage.clear();
+    backMenu();
 }
 </script>
 
