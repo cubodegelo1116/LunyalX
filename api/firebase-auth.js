@@ -38,8 +38,48 @@ export default async function handler(req, res) {
   try {
     const { action, password, username } = req.body;
 
-    // Criar account
-    if (action === 'create-account') {
+    // Verificar account (login normal)
+    if (action === 'verify-account') {
+      if (!username || !password) {
+        return res.status(400).json({ error: "Username and password required" });
+      }
+
+      const accountsRef = ref(database, 'accounts');
+      const snapshot = await get(accountsRef);
+      const accounts = snapshot.exists() ? snapshot.val() : {};
+
+      let foundAccount = null;
+      for (const key in accounts) {
+        if (accounts[key]?.username === username && accounts[key]?.password === password) {
+          foundAccount = accounts[key];
+          break;
+        }
+      }
+
+      if (!foundAccount) {
+        return res.status(401).json({ error: "Invalid username or password" });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Login successful"
+      });
+    }
+
+    // Verificar dev key
+    if (action === 'verify-dev-key') {
+      const devKey = req.headers['x-dev-key'];
+      const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
+
+      if (!validDevKeys.includes(devKey)) {
+        return res.status(403).json({ error: "Invalid dev key" });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Dev key verified"
+      });
+    }
       if (!username || !password) {
         return res.status(400).json({ error: "Username and password required" });
       }
