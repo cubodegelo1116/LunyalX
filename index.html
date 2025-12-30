@@ -449,13 +449,39 @@ button.plan-btn:hover { background:#64ccb8; }
 <h1>Dashboard</h1>
 <div id="userinfo" style="display:none;"></div>
 
-<div id="loginBox">
+<div id="loginOptions" style="display:block;">
+<h3 style="margin-bottom: 20px;">How do you want to login?</h3>
+<button onclick="showNormalLogin()" style="background:#7fffd4; color:#000; border:none; padding:12px 24px; border-radius:8px; cursor:pointer; font-weight:600; margin-right:10px; transition:0.25s;">Create Account</button>
+<button onclick="showDevLogin()" style="background:#7fffd4; color:#000; border:none; padding:12px 24px; border-radius:8px; cursor:pointer; font-weight:600; transition:0.25s;">Dev Login</button>
+</div>
+
+<div id="loginBox" style="display:none;">
 <h3>Create Account</h3>
 <p style="opacity: 0.8; margin-bottom: 15px;">Enter your Roblox username and create a password</p>
 <input id="createUsername" placeholder="Your Roblox username">
 <input id="createPassword" placeholder="Create a password" type="password">
 <button onclick="createAccount()">Create Account</button>
+<button onclick="backToOptions()" style="background: rgba(255,255,255,0.1); margin-left: 10px;">Back</button>
 <p id="loginmsg"></p>
+</div>
+
+<div id="devLoginBox" style="display:none;">
+<h3>Dev Login</h3>
+<p style="opacity: 0.8; margin-bottom: 15px;">Login using your dev key</p>
+<input id="devLoginKey" placeholder="dev-XXXXX-XXXXX-XXXXX">
+<button onclick="devLogin()">Dev Login</button>
+<button onclick="backToOptions()" style="background: rgba(255,255,255,0.1); margin-left: 10px;">Back</button>
+<p id="devLoginmsg"></p>
+</div>
+
+<div id="normalLoginBox" style="display:none;">
+<h3>Login</h3>
+<p style="opacity: 0.8; margin-bottom: 15px;">Enter your username and password</p>
+<input id="loginUsername" placeholder="Your username">
+<input id="loginPassword" placeholder="Your password" type="password">
+<button onclick="normalLogin()">Login</button>
+<button onclick="backToOptions()" style="background: rgba(255,255,255,0.1); margin-left: 10px;">Back</button>
+<p id="normalLoginmsg"></p>
 </div>
 
 <div id="tosBox" style="display:none; margin-top: 20px;">
@@ -542,6 +568,32 @@ function toggleFaq(item){
 const devNicks = ["enzopiticopileko","RC7REMAKERYTT"];
 const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7","dev-V8LQ2-9DMA2-1KXQ0"];
 
+function showNormalLogin() {
+    document.getElementById("loginOptions").style.display = "none";
+    document.getElementById("normalLoginBox").style.display = "block";
+}
+
+function showDevLogin() {
+    document.getElementById("loginOptions").style.display = "none";
+    document.getElementById("devLoginBox").style.display = "block";
+}
+
+function backToOptions() {
+    document.getElementById("loginOptions").style.display = "block";
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("devLoginBox").style.display = "none";
+    document.getElementById("normalLoginBox").style.display = "none";
+    document.getElementById("tosBox").style.display = "none";
+    document.getElementById("createUsername").value = "";
+    document.getElementById("createPassword").value = "";
+    document.getElementById("loginUsername").value = "";
+    document.getElementById("loginPassword").value = "";
+    document.getElementById("devLoginKey").value = "";
+    document.getElementById("loginmsg").innerText = "";
+    document.getElementById("normalLoginmsg").innerText = "";
+    document.getElementById("devLoginmsg").innerText = "";
+}
+
 /* Criar Account */
 async function createAccount() {
     const username = document.getElementById("createUsername").value.trim();
@@ -589,6 +641,108 @@ async function createAccount() {
         msg.style.color = "#7fffd4";
         
         document.getElementById("loginBox").style.display = "none";
+        document.getElementById("normalLoginBox").style.display = "none";
+        document.getElementById("tosBox").style.display = "block";
+
+    } catch(e) {
+        msg.innerText = "Error connecting to server.";
+        msg.style.color = "#ff6b6b";
+        console.error(e);
+    }
+}
+
+/* Normal Login */
+async function normalLogin() {
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+    const msg = document.getElementById("normalLoginmsg");
+
+    if (!username || !password) {
+        msg.innerText = "Enter username and password.";
+        msg.style.color = "#ff6b6b";
+        return;
+    }
+
+    try {
+        msg.innerText = "Logging in...";
+        msg.style.color = "#7fffd4";
+
+        const res = await fetch(`/api/firebase-auth`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                action: 'verify-account',
+                username,
+                password
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            msg.innerText = data.error || "Login failed.";
+            msg.style.color = "#ff6b6b";
+            return;
+        }
+
+        sessionStorage.setItem('username', username);
+        sessionStorage.setItem('password', password);
+
+        msg.innerText = "✓ Login successful! Please read the Terms of Service.";
+        msg.style.color = "#7fffd4";
+        
+        document.getElementById("normalLoginBox").style.display = "none";
+        document.getElementById("tosBox").style.display = "block";
+
+    } catch(e) {
+        msg.innerText = "Error connecting to server.";
+        msg.style.color = "#ff6b6b";
+        console.error(e);
+    }
+}
+
+/* Dev Login */
+async function devLogin() {
+    const devKey = document.getElementById("devLoginKey").value.trim();
+    const msg = document.getElementById("devLoginmsg");
+
+    if (!devKey) {
+        msg.innerText = "Enter dev key.";
+        msg.style.color = "#ff6b6b";
+        return;
+    }
+
+    try {
+        msg.innerText = "Verifying dev key...";
+        msg.style.color = "#7fffd4";
+
+        const res = await fetch(`/api/firebase-auth`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'x-dev-key': devKey
+            },
+            body: JSON.stringify({ 
+                action: 'verify-dev-key'
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            msg.innerText = data.error || "Invalid dev key.";
+            msg.style.color = "#ff6b6b";
+            return;
+        }
+
+        sessionStorage.setItem('username', 'Dev User');
+        sessionStorage.setItem('isDev', 'true');
+        sessionStorage.setItem('devKey', devKey);
+
+        msg.innerText = "✓ Dev login successful!";
+        msg.style.color = "#7fffd4";
+        
+        document.getElementById("devLoginBox").style.display = "none";
         document.getElementById("tosBox").style.display = "block";
 
     } catch(e) {
