@@ -489,6 +489,32 @@ button.plan-btn:hover { background:#64ccb8; }
 <input id="devkey" placeholder="dev-XXXXX-XXXXX-XXXXX">
 <button onclick="checkDev()">Access Panel</button>
 <p id="devmsg"></p>
+
+<div id="devPanelContent" style="display:none; margin-top: 30px;">
+<h2>Developer Tools</h2>
+
+<div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.06); border-radius: 12px;">
+<h3>Delete Account (Reset)</h3>
+<p style="opacity: 0.8; margin-bottom: 10px;">Remove an account to allow user to create again</p>
+<input id="deleteUsername" placeholder="Username to delete">
+<button onclick="deleteAccount()">Delete Account</button>
+<p id="deleteMsg"></p>
+</div>
+
+<div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.06); border-radius: 12px;">
+<h3>List Accounts</h3>
+<button onclick="listAccounts()">Show All Accounts</button>
+<div id="accountsList" style="margin-top: 15px; max-height: 400px; overflow-y: auto;"></div>
+</div>
+
+<div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.06); border-radius: 12px;">
+<h3>Generate Password</h3>
+<button onclick="generateNewPassword()">Create New Password</button>
+<p id="passwordMsg"></p>
+</div>
+
+<button onclick="closeDev()" style="background: #ff6b6b; margin-top: 20px; padding: 10px 15px; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: 600;">Close Dev Panel</button>
+</div>
 </div>
 
 </main>
@@ -599,16 +625,180 @@ function logout() {
     document.getElementById("createPassword").value = "";
     document.getElementById("loginmsg").innerText = "";
     document.getElementById("loginBtn").style.display = "inline-block";
+    document.getElementById("loginBtn").innerText = "Login";
+    
+    // Remove a classe active da aba dashboard
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.content').forEach(s => s.classList.remove('active'));
 }
 
 /* Dev Key */
+let devKey = null;
+
 function checkDev() {
     const key = document.getElementById("devkey").value.trim();
     const msg = document.getElementById("devmsg");
+    const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7", "dev-V8LQ2-9DMA2-1KXQ0"];
 
     if (validDevKeys.includes(key)) {
-        msg.innerText = "Access granted. Dev Panel unlocked.";
-    } else { msg.innerText = "Invalid dev key."; }
+        msg.innerText = "✓ Access granted. Dev Panel unlocked.";
+        msg.style.color = "#7fffd4";
+        devKey = key;
+        document.getElementById("devPanelContent").style.display = "block";
+        document.getElementById("devkey").style.display = "none";
+        document.querySelectorAll('button')[document.querySelectorAll('button').length - 5].style.display = "none";
+    } else { 
+        msg.innerText = "✗ Invalid dev key.";
+        msg.style.color = "#ff6b6b";
+    }
+}
+
+function closeDev() {
+    document.getElementById("devPanelContent").style.display = "none";
+    document.getElementById("devkey").style.display = "block";
+    document.getElementById("devkey").value = "";
+    document.getElementById("devmsg").innerText = "";
+    devKey = null;
+}
+
+async function deleteAccount() {
+    const username = document.getElementById("deleteUsername").value.trim();
+    const msg = document.getElementById("deleteMsg");
+
+    if (!username) {
+        msg.innerText = "Enter username to delete.";
+        msg.style.color = "#ff6b6b";
+        return;
+    }
+
+    if (!devKey) {
+        msg.innerText = "Dev key not set.";
+        msg.style.color = "#ff6b6b";
+        return;
+    }
+
+    try {
+        msg.innerText = "Deleting account...";
+        msg.style.color = "#7fffd4";
+
+        const res = await fetch(`/api/firebase-auth`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'x-dev-key': devKey
+            },
+            body: JSON.stringify({ action: 'delete-account', username })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            msg.innerText = data.error || "Error deleting account.";
+            msg.style.color = "#ff6b6b";
+            return;
+        }
+
+        msg.innerText = `✓ Account "${username}" deleted successfully!`;
+        msg.style.color = "#7fffd4";
+        document.getElementById("deleteUsername").value = "";
+
+    } catch(e) {
+        msg.innerText = "Error connecting to API.";
+        msg.style.color = "#ff6b6b";
+        console.error(e);
+    }
+}
+
+async function listAccounts() {
+    const list = document.getElementById("accountsList");
+
+    if (!devKey) {
+        list.innerText = "Dev key not set.";
+        return;
+    }
+
+    try {
+        list.innerText = "Loading accounts...";
+
+        const res = await fetch(`/api/firebase-auth`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'x-dev-key': devKey
+            },
+            body: JSON.stringify({ action: 'list-accounts' })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            list.innerText = data.error || "Error loading accounts.";
+            return;
+        }
+
+        const accounts = data.accounts || {};
+
+        if (Object.keys(accounts).length === 0) {
+            list.innerText = "No accounts yet.";
+            return;
+        }
+
+        let html = '<table style="width: 100%; border-collapse: collapse;">';
+        html += '<tr style="border-bottom: 1px solid rgba(255,255,255,0.1);"><th style="text-align: left; padding: 10px;">Username</th><th style="text-align: left; padding: 10px;">Created</th></tr>';
+
+        for (const key in accounts) {
+            const acc = accounts[key];
+            const date = new Date(acc.createdAt).toLocaleDateString();
+            html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="padding: 10px;">${acc.username}</td><td style="padding: 10px;">${date}</td></tr>`;
+        }
+
+        html += '</table>';
+        list.innerHTML = html;
+
+    } catch(e) {
+        list.innerText = "Error connecting to API.";
+        console.error(e);
+    }
+}
+
+async function generateNewPassword() {
+    const msg = document.getElementById("passwordMsg");
+
+    if (!devKey) {
+        msg.innerText = "Dev key not set.";
+        msg.style.color = "#ff6b6b";
+        return;
+    }
+
+    try {
+        msg.innerText = "Generating password...";
+        msg.style.color = "#7fffd4";
+
+        const res = await fetch(`/api/firebase-auth`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'x-dev-key': devKey
+            },
+            body: JSON.stringify({ action: 'create-password' })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            msg.innerText = data.error || "Error creating password.";
+            msg.style.color = "#ff6b6b";
+            return;
+        }
+
+        msg.innerHTML = `✓ Password created: <strong style="color: #7fffd4;">${data.password}</strong>`;
+        msg.style.color = "#7fffd4";
+
+    } catch(e) {
+        msg.innerText = "Error connecting to API.";
+        msg.style.color = "#ff6b6b";
+        console.error(e);
+    }
 }
 
 /* CLICK LOGO → PLANS */
