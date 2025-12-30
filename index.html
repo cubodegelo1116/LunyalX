@@ -154,6 +154,7 @@ h3 {margin-bottom:15px;}
     <button class="nav-btn" data-tab="showcases">Showcases</button>
     <button class="nav-btn" data-tab="faq">FAQ</button>
     <button class="nav-btn" data-tab="dashboard">Dashboard</button>
+    <button class="nav-btn" id="devPanelTab" data-tab="devpanel" style="display:none;">Dev Panel</button>
     <button onclick="window.open('https://discord.gg/R5fNXbBg','_blank')">Discord</button>
 </nav>
 </header>
@@ -318,13 +319,18 @@ h3 {margin-bottom:15px;}
 <p style="margin:10px 0; opacity:0.9;">You are logged in.</p>
 <button class="btn danger" onclick="logoutFunc()">Logout</button>
 </div>
-<div id="devPanelBox" style="display:none; margin-top:20px;">
-<h3>Dev Panel - Account Management</h3>
+</div>
+
+</div>
+
+<!-- DEV PANEL TAB -->
+<div class="content" id="devpanel">
+<h1>Developer Panel</h1>
+<div id="devPanelContent">
+<h3>Account Management</h3>
 <button class="btn" onclick="loadAccounts()">Load Accounts</button>
 <div id="accountsList" class="account-list"></div>
 </div>
-</div>
-
 </div>
 
 </main>
@@ -503,9 +509,7 @@ function showUserPanel() {
     document.getElementById('userWelcome').innerText = `Welcome, ${user}! 🎉`;
     
     if (isDev === 'true') {
-        document.getElementById('devPanelBox').style.display = 'block';
-    } else {
-        document.getElementById('devPanelBox').style.display = 'none';
+        document.getElementById('devPanelTab').style.display = 'inline-block';
     }
 }
 
@@ -559,6 +563,7 @@ async function delAccount(user) {
 
 function logoutFunc() {
     sessionStorage.clear();
+    document.getElementById('devPanelTab').style.display = 'none';
     backMenu();
 }
 </script>
