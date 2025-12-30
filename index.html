@@ -455,32 +455,32 @@ button.plan-btn:hover { background:#64ccb8; }
 <button class="plan-btn" id="devLoginBtn" onclick="showDevLogin()" style="display:none;">Dev Login</button>
 </div>
 
-<div id="loginBox" style="display:none;">
+<div id="normalLoginBox" style="display:none;">
 <h3>Create Account</h3>
 <p style="opacity: 0.8; margin-bottom: 15px;">Enter your Roblox username and create a password</p>
 <input id="createUsername" placeholder="Your Roblox username">
 <input id="createPassword" placeholder="Create a password" type="password">
-<button onclick="createAccount()">Create Account</button>
-<button onclick="backToOptions()" style="background: rgba(255,255,255,0.1); margin-left: 10px;">Back</button>
+<button class="plan-btn" onclick="createAccount()" style="margin-right: 10px;">Create Account</button>
+<button class="plan-btn" onclick="backToOptions()" style="background: rgba(255,255,255,0.1); color: #fff;">Back</button>
 <p id="loginmsg"></p>
 </div>
 
 <div id="devLoginBox" style="display:none;">
 <h3>Dev Login</h3>
-<p style="opacity: 0.8; margin-bottom: 15px;">Login using your dev key</p>
+<p style="opacity: 0.8; margin-bottom: 15px;">Enter your dev key (FighterCitizen or RC7REMAKER)</p>
 <input id="devLoginKey" placeholder="dev-XXXXX-XXXXX-XXXXX">
-<button onclick="devLogin()">Dev Login</button>
-<button onclick="backToOptions()" style="background: rgba(255,255,255,0.1); margin-left: 10px;">Back</button>
+<button class="plan-btn" onclick="devLogin()" style="margin-right: 10px;">Dev Login</button>
+<button class="plan-btn" onclick="backToOptions()" style="background: rgba(255,255,255,0.1); color: #fff;">Back</button>
 <p id="devLoginmsg"></p>
 </div>
 
-<div id="normalLoginBox" style="display:none;">
+<div id="normalExistingBox" style="display:none;">
 <h3>Login</h3>
 <p style="opacity: 0.8; margin-bottom: 15px;">Enter your username and password</p>
 <input id="loginUsername" placeholder="Your username">
 <input id="loginPassword" placeholder="Your password" type="password">
-<button onclick="normalLogin()">Login</button>
-<button onclick="backToOptions()" style="background: rgba(255,255,255,0.1); margin-left: 10px;">Back</button>
+<button class="plan-btn" onclick="normalLogin()" style="margin-right: 10px;">Login</button>
+<button class="plan-btn" onclick="backToOptions()" style="background: rgba(255,255,255,0.1); color: #fff;">Back</button>
 <p id="normalLoginmsg"></p>
 </div>
 
@@ -641,15 +641,17 @@ async function createAccount() {
 
         // Mostra Dev Login só pra nomes específicos
         if (devNames.includes(username)) {
+            msg.innerText = "✓ Account created! You can now use Dev Login or proceed with ToS.";
+            msg.style.color = "#7fffd4";
+            document.getElementById("normalLoginBox").style.display = "none";
             document.getElementById("devLoginBtn").style.display = "inline-block";
+            document.getElementById("loginOptions").style.display = "block";
+        } else {
+            msg.innerText = "✓ Account created! Please read the Terms of Service.";
+            msg.style.color = "#7fffd4";
+            document.getElementById("normalLoginBox").style.display = "none";
+            document.getElementById("tosBox").style.display = "block";
         }
-
-        msg.innerText = "✓ Account created! Please read the Terms of Service.";
-        msg.style.color = "#7fffd4";
-        
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("normalLoginBox").style.display = "none";
-        document.getElementById("tosBox").style.display = "block";
 
     } catch(e) {
         msg.innerText = "Error connecting to server.";
