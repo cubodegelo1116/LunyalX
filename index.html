@@ -349,14 +349,14 @@ button.plan-btn:hover { background:#64ccb8; }
 <div class="showcases-grid">
 <div class="showcase-card">
 <div class="showcase-placeholder"></div>
-<p style="margin-top: 15px; font-weight: 600;">Nothing</p>
-<p style="opacity: 0.7; font-size: 0.9rem;">Nil</p>
+<p style="margin-top: 15px; font-weight: 600;">Robbing A Roblox Restaurant</p>
+<p style="opacity: 0.7; font-size: 0.9rem;">TypicalModern</p>
 </div>
 
 <div class="showcase-card">
 <div class="showcase-placeholder"></div>
-<p style="margin-top: 15px; font-weight: 600;">Nothing</p>
-<p style="opacity: 0.7; font-size: 0.9rem;">Nil</p>
+<p style="margin-top: 15px; font-weight: 600;">Trap Rifle Script Trolling</p>
+<p style="opacity: 0.7; font-size: 0.9rem;">TypicalModern</p>
 </div>
 </div>
 </div>
@@ -446,13 +446,45 @@ button.plan-btn:hover { background:#64ccb8; }
 <!-- DASHBOARD -->
 <div class="content" id="dashboard">
 <h1>Dashboard</h1>
-<div id="userinfo"></div>
+<div id="userinfo" style="display:none;"></div>
 
-<div class="login-box" id="loginBox">
+<div id="loginBox">
 <h3>Login</h3>
-<input id="username" placeholder="Roblox Username">
+<p style="opacity: 0.8; margin-bottom: 15px;">Enter your password to login</p>
+<input id="password" placeholder="Enter password" type="password">
 <button onclick="login()">Login</button>
 <p id="loginmsg"></p>
+</div>
+
+<div id="setUsernameBox" style="display:none; margin-top: 20px;">
+<h3>Set Your Username</h3>
+<p style="opacity: 0.8; margin-bottom: 15px;">What's your Roblox username?</p>
+<input id="robloxUsername" placeholder="Your Roblox username">
+<button onclick="setUsername()">Confirm</button>
+<p id="usernamemsg"></p>
+</div>
+
+<div id="tosBox" style="display:none; margin-top: 20px;">
+<h1>Terms of Service</h1>
+<div class="tos-box" style="margin-top: 15px;">
+<ul>
+<li><span class="badge red">❌</span> No Map Changing</li>
+<li><span class="badge red">❌</span> No Dex</li>
+<li><span class="badge red">❌</span> No HappyHub or K00pGui</li>
+<li><span class="badge red">❌</span> No Toxic Behavior</li>
+<li><span class="badge red">❌</span> No Banning / Kicking Players</li>
+
+<li><span class="badge yellow">🟡</span> No Troll GUIs</li>
+<li><span class="badge yellow">🟡</span> No External Executor Requirements</li>
+
+<li><span class="badge green">🟢</span> Abuse Allowed</li>
+<li><span class="badge green">🟢</span> Abusive Scripts Allowed</li>
+<li><span class="badge green">🟢</span> Killing Players Allowed</li>
+<li><span class="badge green">🟢</span> Giving Require to Friends or Random Players Allowed</li>
+</ul>
+</div>
+
+<button onclick="agreeToS()" style="background: #7fffd4; color: #000; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.25s; margin-top: 20px; font-size: 1rem;">I Agree</button>
 </div>
 </div>
 
@@ -490,34 +522,96 @@ function toggleFaq(item){
 const devNicks = ["enzopiticopileko","RC7REMAKERYTT"];
 const validDevKeys = ["dev-02JH9-KQ3L2-HF9A7","dev-V8LQ2-9DMA2-1KXQ0"];
 
-/* Login */
+/* Login com Firebase */
 async function login() {
-    const user = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
     const msg = document.getElementById("loginmsg");
-    const avatar = document.getElementById("userAvatar");
 
-    if (!user) { msg.innerText="Enter a username."; return; }
+    if (!password) { 
+        msg.innerText = "Enter a password."; 
+        return; 
+    }
 
     try {
-        msg.innerText = "Checking whitelist...";
-        const res = await fetch(`/functions/checkgroup?user=${user}`);
+        msg.innerText = "Verifying...";
+        const res = await fetch(`/api/firebase-auth`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'login', password })
+        });
+
         const data = await res.json();
 
-        if (data.error) { msg.innerText="User not found."; return; }
-
-        avatar.innerHTML = `<img class="user-avatar" src="https://www.roblox.com/bust-thumbnail/image?userId=${data.userId}&width=50&height=50&format=png">`;
-
-        document.getElementById("userinfo").innerHTML =
-            `<h2>User: ${user}</h2><p>Whitelist: ${data.inGroup ? "Free Plan" : "None"}</p>`;
-
-        if (data.isDev) {
-            document.getElementById("devPanelBtn").style.display = "inline-block";
-        } else {
-            document.getElementById("devPanelBtn").style.display = "none";
+        if (!res.ok) { 
+            msg.innerText = data.error || "Login failed."; 
+            msg.style.color = "#ff6b6b";
+            return; 
         }
 
-        msg.innerText = "Login successful!";
-    } catch(e) { msg.innerText="Error connecting to API."; }
+        sessionStorage.setItem('token', data.token);
+        msg.innerText = "✓ Login successful! Now set your username.";
+        msg.style.color = "#7fffd4";
+        
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("setUsernameBox").style.display = "block";
+
+    } catch(e) { 
+        msg.innerText = "Error connecting to API."; 
+        msg.style.color = "#ff6b6b";
+        console.error(e);
+    }
+}
+
+function setUsername() {
+    const username = document.getElementById("robloxUsername").value.trim();
+    const msg = document.getElementById("usernamemsg");
+
+    if (!username) {
+        msg.innerText = "Enter your username.";
+        msg.style.color = "#ff6b6b";
+        return;
+    }
+
+    sessionStorage.setItem('username', username);
+    
+    msg.innerText = "✓ Username set!";
+    msg.style.color = "#7fffd4";
+    
+    // Esconde set username, mostra ToS
+    document.getElementById("setUsernameBox").style.display = "none";
+    document.getElementById("tosBox").style.display = "block";
+}
+
+function agreeToS() {
+    const username = sessionStorage.getItem('username');
+    const userinfo = document.getElementById("userinfo");
+    
+    // Esconde ToS, mostra dashboard
+    document.getElementById("tosBox").style.display = "none";
+    document.getElementById("loginBox").style.display = "none";
+    
+    userinfo.innerHTML = `
+        <div style="background: rgba(122,255,210,0.1); padding: 20px; border-radius: 12px; border: 1px solid rgba(122,255,210,0.3);">
+            <h2>Welcome, ${username}! 🎉</h2>
+            <p style="margin: 10px 0; opacity: 0.9;">You are now logged in and agreed to the Terms of Service.</p>
+            <button onclick="logout()" style="background: #ff6b6b; padding: 10px 15px; border: none; border-radius: 8px; color: white; cursor: pointer; margin-top: 15px; transition: 0.25s;" onmouseover="this.style.background='#ff5252'" onmouseout="this.style.background='#ff6b6b'">Logout</button>
+        </div>
+    `;
+    userinfo.style.display = "block";
+}
+
+function logout() {
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('username');
+    
+    document.getElementById("userinfo").style.display = "none";
+    document.getElementById("loginBox").style.display = "block";
+    document.getElementById("setUsernameBox").style.display = "none";
+    document.getElementById("tosBox").style.display = "none";
+    document.getElementById("password").value = "";
+    document.getElementById("robloxUsername").value = "";
+    document.getElementById("loginmsg").innerText = "";
+    document.getElementById("usernamemsg").innerText = "";
 }
 
 /* Dev Key */
