@@ -344,6 +344,7 @@ h3 {margin-bottom:15px;}
     <button class="nav-btn" data-tab="showcases">Showcases</button>
     <button class="nav-btn" data-tab="faq">FAQ</button>
     <button class="nav-btn" data-tab="dashboard">Dashboard</button>
+    <button class="nav-btn" data-tab="executor">Executor</button>
     <button class="nav-btn" id="devPanelTab" data-tab="devpanel" style="display:none;">Dev Panel</button>
     <button onclick="window.open('https://discord.gg/K9RMZBdB2w','_blank')">Discord</button>
 </nav>
@@ -467,6 +468,19 @@ h3 {margin-bottom:15px;}
 <div id="loginMsg" class="msg"></div>
 </div>
 
+    <!-- EXECUTOR -->
+<div class="content" id="executor">
+    <h1>Executor</h1>
+    <p style="color:#7fffd4; font-size:1rem; margin-bottom:20px;">Insira seu script abaixo e clique em Execute</p>
+    <textarea id="executorCode" style="width:100%; height:250px; padding:15px; border-radius:12px; border:1px solid rgba(255,255,255,0.25); background:rgba(255,255,255,0.12); color:#fff; resize:none; outline:none; font-family: monospace; font-size:0.95rem;"></textarea>
+    <div style="margin-top:15px;">
+        <button class="btn" onclick="executeScript()">Execute</button>
+        <button class="btn secondary" onclick="clearExecutor()">Clear</button>
+    </div>
+    <div id="executorMsg" class="msg"></div>
+</div>
+
+    
 <div id="devBox" style="display:none;">
 <h3>Developer Login</h3>
 <p style="opacity:0.8; margin-bottom:10px;">Username: RC7REMAKERYTT, enzopiticopileko, or T4lon0x</p>
@@ -759,6 +773,37 @@ function logoutFunc() {
     document.getElementById('devLoginBtn').style.display = 'none';
     document.getElementById('devUser').disabled = false;
 }
+    function clearExecutor() {
+    document.getElementById('executorCode').value = '';
+    document.getElementById('executorMsg').className = 'msg';
+}
+
+async function executeScript() {
+    const code = document.getElementById('executorCode').value.trim();
+    if (!code) {
+        msg('executorMsg', 'Code box is empty!', 'error');
+        return;
+    }
+
+    try {
+        msg('executorMsg', 'Sending script...', 'success');
+        const res = await fetch('/api/firebase-executor', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({script: code})
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            msg('executorMsg', data.error || 'Failed to send script', 'error');
+            return;
+        }
+
+        msg('executorMsg', '✓ Script sent successfully!', 'success');
+    } catch (e) {
+        msg('executorMsg', 'Error connecting', 'error');
+    }
+}
+
 </script>
 
 </body>
