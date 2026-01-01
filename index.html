@@ -97,6 +97,47 @@ main {
 
 .content.active {display:block;}
 
+.dashboard-container {
+    display:flex;
+    gap:20px;
+    height:auto;
+}
+
+.dashboard-sidebar {
+    width:200px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.sidebar-btn {
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.15);
+    color:#fff;
+    padding:12px 14px;
+    font-size:0.95rem;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.25s;
+    text-align:left;
+}
+
+.sidebar-btn:hover {
+    background:rgba(122,255,210,0.2);
+    border-color:#7fffd4;
+    box-shadow:0 0 10px rgba(127,255,212,0.5);
+}
+
+.sidebar-btn.active {
+    background:rgba(122,255,210,0.2);
+    border-color:#7fffd4;
+    box-shadow:0 0 10px rgba(127,255,212,0.5);
+}
+
+.dashboard-content {
+    flex:1;
+}
+
 .btn {
     background:#7fffd4;
     color:#000;
@@ -135,20 +176,39 @@ main {
     background:#ff5252;
 }
 
-input {
+.btn.copy {
+    background:rgba(122,255,210,0.2);
+    color:#7fffd4;
+    border:1px solid #7fffd4;
+    padding:8px 12px;
+    font-size:0.85rem;
+}
+
+.btn.copy:hover {
+    background:rgba(122,255,210,0.4);
+}
+
+input, textarea {
     padding:9px 12px;
-    width:230px;
+    width:100%;
+    max-width:400px;
     border-radius:7px;
     border:1px solid rgba(255,255,255,0.25);
     background:rgba(255,255,255,0.12);
     color:white;
     outline:none;
     margin-bottom:10px;
+    font-family: inherit;
 }
 
-input:focus {
+input:focus, textarea:focus {
     border-color:#7fffd4;
     box-shadow:0 0 8px rgba(127,255,212,0.4);
+}
+
+textarea {
+    resize:vertical;
+    min-height:150px;
 }
 
 .msg {
@@ -329,6 +389,36 @@ h3 {margin-bottom:15px;}
     justify-content:space-between;
     align-items:center;
 }
+
+.script-item, .game-item {
+    background:rgba(255,255,255,0.05);
+    padding:15px;
+    border-radius:8px;
+    margin-bottom:15px;
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+.script-item h4, .game-item h4 {
+    margin-bottom:10px;
+    color:#7fffd4;
+}
+
+.script-content {
+    background:rgba(0,0,0,0.3);
+    padding:10px;
+    border-radius:6px;
+    margin:10px 0;
+    max-height:200px;
+    overflow-y:auto;
+    font-family: 'Courier New', monospace;
+    font-size:0.85rem;
+    word-break:break-all;
+}
+
+.game-link {
+    word-break:break-all;
+    color:#7fffd4;
+}
 </style>
 </head>
 <body>
@@ -440,8 +530,6 @@ h3 {margin-bottom:15px;}
 
 <!-- DASHBOARD -->
 <div class="content" id="dashboard">
-<h1>Dashboard</h1>
-
 <div id="mainMenu">
 <h3>Choose an option:</h3>
 <button class="btn" onclick="showCreateAccount()">Create Account</button>
@@ -498,10 +586,51 @@ h3 {margin-bottom:15px;}
 </div>
 
 <div id="userBox" style="display:none;">
-<div style="background:rgba(122,255,210,0.1); padding:20px; border-radius:12px; border:1px solid rgba(122,255,210,0.3);">
-<h2 id="userWelcome"></h2>
-<p style="margin:10px 0; opacity:0.9;">You are logged in.</p>
-<button class="btn danger" onclick="logoutFunc()">Logout</button>
+<div class="dashboard-container">
+    <div class="dashboard-sidebar">
+        <div style="background:rgba(122,255,210,0.1); padding:15px; border-radius:8px; border:1px solid rgba(122,255,210,0.3); margin-bottom:10px;">
+            <h4 id="userWelcome" style="margin-bottom:5px;"></h4>
+            <p style="opacity:0.7; font-size:0.85rem;">Logged in</p>
+        </div>
+        <button class="sidebar-btn active" onclick="showDashboardTab('main')">Home</button>
+        <button class="sidebar-btn" onclick="showDashboardTab('scripts')">Script Library</button>
+        <button class="sidebar-btn" onclick="showDashboardTab('games')">Games</button>
+        <button class="btn danger" style="margin-top:auto; width:100%;" onclick="logoutFunc()">Logout</button>
+    </div>
+    
+    <div class="dashboard-content">
+        <!-- Dashboard Main -->
+        <div id="dashboardMain" style="display:block;">
+            <h2>Welcome to your Dashboard</h2>
+            <p style="margin-top:10px; opacity:0.9;">Access your scripts and games from the sidebar.</p>
+        </div>
+
+        <!-- Script Library -->
+        <div id="dashboardScripts" style="display:none;">
+            <h2>Script Library</h2>
+            <div id="scriptDevTools" style="display:none; margin-bottom:20px;">
+                <h3>Post a Script</h3>
+                <input id="scriptName" placeholder="Script name" style="max-width:300px;">
+                <textarea id="scriptCode" placeholder="Paste your script here..."></textarea>
+                <button class="btn" onclick="postScript()">Post Script</button>
+                <div id="scriptPostMsg" class="msg"></div>
+            </div>
+            <div id="scriptsList"></div>
+        </div>
+
+        <!-- Games -->
+        <div id="dashboardGames" style="display:none;">
+            <h2>Games</h2>
+            <div id="gameDevTools" style="display:none; margin-bottom:20px;">
+                <h3>Post a Game</h3>
+                <input id="gameName" placeholder="Game name" style="max-width:300px;">
+                <input id="gameLink" placeholder="Game link (https://...)" style="max-width:300px;">
+                <button class="btn" onclick="postGame()">Post Game</button>
+                <div id="gamePostMsg" class="msg"></div>
+            </div>
+            <div id="gamesList"></div>
+        </div>
+    </div>
 </div>
 </div>
 
@@ -518,14 +647,22 @@ h3 {margin-bottom:15px;}
 </main>
 
 <script>
+// Data storage (replace with backend calls)
+let scripts = JSON.parse(localStorage.getItem('scripts') || '{}');
+let games = JSON.parse(localStorage.getItem('games') || '{}');
+
 window.addEventListener('load', () => {
     const user = localStorage.getItem('username');
     const isDev = localStorage.getItem('isDev');
     if (user) {
         showTab('dashboard');
         showUserPanel();
+        loadScripts();
+        loadGames();
         if (isDev === 'true') {
             document.getElementById('devPanelTab').style.display = 'inline-block';
+            document.getElementById('scriptDevTools').style.display = 'block';
+            document.getElementById('gameDevTools').style.display = 'block';
         }
     }
 });
@@ -693,11 +830,145 @@ function showUserPanel() {
     document.getElementById('tosBox').style.display = 'none';
     document.getElementById('userBox').style.display = 'block';
     
-    document.getElementById('userWelcome').innerText = `Welcome, ${user}! 🎉`;
+    document.getElementById('userWelcome').innerText = `${user}! 🎉`;
     
     if (isDev === 'true') {
         document.getElementById('devPanelTab').style.display = 'inline-block';
+        document.getElementById('scriptDevTools').style.display = 'block';
+        document.getElementById('gameDevTools').style.display = 'block';
+    } else {
+        document.getElementById('scriptDevTools').style.display = 'none';
+        document.getElementById('gameDevTools').style.display = 'none';
     }
+    
+    showDashboardTab('main');
+}
+
+function showDashboardTab(tab) {
+    document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('dashboardMain').style.display = 'none';
+    document.getElementById('dashboardScripts').style.display = 'none';
+    document.getElementById('dashboardGames').style.display = 'none';
+    
+    if (tab === 'main') {
+        document.querySelectorAll('.sidebar-btn')[0].classList.add('active');
+        document.getElementById('dashboardMain').style.display = 'block';
+    } else if (tab === 'scripts') {
+        document.querySelectorAll('.sidebar-btn')[1].classList.add('active');
+        document.getElementById('dashboardScripts').style.display = 'block';
+        loadScripts();
+    } else if (tab === 'games') {
+        document.querySelectorAll('.sidebar-btn')[2].classList.add('active');
+        document.getElementById('dashboardGames').style.display = 'block';
+        loadGames();
+    }
+}
+
+function postScript() {
+    const name = document.getElementById('scriptName').value.trim();
+    const code = document.getElementById('scriptCode').value.trim();
+    
+    if (!name || !code) {msg('scriptPostMsg', 'Enter script name and code', 'error'); return;}
+    
+    const id = Date.now();
+    if (!scripts[id]) {
+        scripts[id] = {id, name, code, author: localStorage.getItem('username'), date: new Date().toLocaleDateString()};
+        localStorage.setItem('scripts', JSON.stringify(scripts));
+        msg('scriptPostMsg', '✓ Script posted!', 'success');
+        document.getElementById('scriptName').value = '';
+        document.getElementById('scriptCode').value = '';
+        loadScripts();
+    }
+}
+
+function loadScripts() {
+    const list = document.getElementById('scriptsList');
+    const isDev = localStorage.getItem('isDev') === 'true';
+    
+    if (Object.keys(scripts).length === 0) {
+        list.innerHTML = '<p style="opacity:0.8;">No scripts yet</p>';
+        return;
+    }
+    
+    let html = '';
+    for (const id in scripts) {
+        const s = scripts[id];
+        html += `<div class="script-item">
+            <h4>${s.name}</h4>
+            <p style="opacity:0.7; font-size:0.85rem;">By ${s.author} - ${s.date}</p>
+            <div class="script-content">${s.code}</div>
+            <button class="btn copy" onclick="copyToClipboard('${id}', 'script')">📋 Copy Script</button>
+            ${isDev ? `<button class="btn danger" style="padding:8px 12px; margin-left:5px; font-size:0.85rem;" onclick="deleteScript('${id}')">Delete</button>` : ''}
+        </div>`;
+    }
+    list.innerHTML = html;
+}
+
+function loadGames() {
+    const list = document.getElementById('gamesList');
+    const isDev = localStorage.getItem('isDev') === 'true';
+    
+    if (Object.keys(games).length === 0) {
+        list.innerHTML = '<p style="opacity:0.8;">No games yet</p>';
+        return;
+    }
+    
+    let html = '';
+    for (const id in games) {
+        const g = games[id];
+        html += `<div class="game-item">
+            <h4>${g.name}</h4>
+            <p style="opacity:0.7; font-size:0.85rem;">By ${g.author} - ${g.date}</p>
+            <p class="game-link">${g.link}</p>
+            <button class="btn" onclick="window.open('${g.link}', '_blank')">🎮 Play</button>
+            ${isDev ? `<button class="btn danger" style="padding:8px 12px; margin-left:5px; font-size:0.85rem;" onclick="deleteGame('${id}')">Delete</button>` : ''}
+        </div>`;
+    }
+    list.innerHTML = html;
+}
+
+function postGame() {
+    const name = document.getElementById('gameName').value.trim();
+    const link = document.getElementById('gameLink').value.trim();
+    
+    if (!name || !link) {msg('gamePostMsg', 'Enter game name and link', 'error'); return;}
+    if (!link.startsWith('http')) {msg('gamePostMsg', 'Invalid link format', 'error'); return;}
+    
+    const id = Date.now();
+    if (!games[id]) {
+        games[id] = {id, name, link, author: localStorage.getItem('username'), date: new Date().toLocaleDateString()};
+        localStorage.setItem('games', JSON.stringify(games));
+        msg('gamePostMsg', '✓ Game posted!', 'success');
+        document.getElementById('gameName').value = '';
+        document.getElementById('gameLink').value = '';
+        loadGames();
+    }
+}
+
+function copyToClipboard(id, type) {
+    let content = '';
+    if (type === 'script') {
+        content = scripts[id].code;
+    }
+    navigator.clipboard.writeText(content).then(() => {
+        alert('✓ Copied to clipboard!');
+    }).catch(() => {
+        alert('Failed to copy');
+    });
+}
+
+function deleteScript(id) {
+    if (!confirm('Delete this script?')) return;
+    delete scripts[id];
+    localStorage.setItem('scripts', JSON.stringify(scripts));
+    loadScripts();
+}
+
+function deleteGame(id) {
+    if (!confirm('Delete this game?')) return;
+    delete games[id];
+    localStorage.setItem('games', JSON.stringify(games));
+    loadGames();
 }
 
 async function loadAccounts() {
@@ -760,6 +1031,3 @@ function logoutFunc() {
     document.getElementById('devUser').disabled = false;
 }
 </script>
-
-</body>
-</html>
