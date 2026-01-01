@@ -829,10 +829,17 @@ function showUserPanel() {
     loadGames();
 }
 
-function showDashboardTab(tabName) {
-    document.getElementById('scriptlibrary').style.display = 'none';
-    document.getElementById('games').style.display = 'none';
-    document.getElementById(tabName).style.display = 'block';
+function showDashTab(tabName) {
+    if (tabName === 'menu') {
+        document.getElementById('userBox').style.display = 'block';
+        document.getElementById('scriptlibrary').style.display = 'none';
+        document.getElementById('games').style.display = 'none';
+    } else {
+        document.getElementById('userBox').style.display = 'none';
+        document.getElementById('scriptlibrary').style.display = 'none';
+        document.getElementById('games').style.display = 'none';
+        document.getElementById(tabName).style.display = 'block';
+    }
 }
 
 async function loadAccounts() {
