@@ -791,6 +791,7 @@ async function doLogin() {
             document.getElementById('devUser').value = user;
             document.getElementById('devUser').disabled = true;
         } else {
+            localStorage.setItem('isDev', 'false');
             msg('loginMsg', '✓ Logged! Read ToS', 'success');
             setTimeout(() => {
                 document.getElementById('loginBox').style.display = 'none';
