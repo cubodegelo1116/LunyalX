@@ -666,8 +666,9 @@ let games = JSON.parse(localStorage.getItem('games') || '{}');
 window.addEventListener('load', () => {
     const user = localStorage.getItem('username');
     const isDev = localStorage.getItem('isDev');
-    showTab('home');
     if (user) {
+        showTab('dashboard');
+        showUserPanel();
         loadScripts();
         loadGames();
         if (isDev === 'true') {
