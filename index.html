@@ -409,8 +409,6 @@ h3 {margin-bottom:15px;}
     <button class="nav-btn" data-tab="tos">TOS</button>
     <button class="nav-btn" data-tab="plans">Plans</button>
     <button class="nav-btn" data-tab="showcases">Showcases</button>
-    <button class="nav-btn" data-tab="scriptlibrary">Script Library</button>
-    <button class="nav-btn" data-tab="games">Games</button>
     <button class="nav-btn" data-tab="faq">FAQ</button>
     <button class="nav-btn" data-tab="dashboard">Dashboard</button>
     <button class="nav-btn" id="devPanelTab" data-tab="devpanel" style="display:none;">Dev Panel</button>
@@ -486,47 +484,9 @@ h3 {margin-bottom:15px;}
 </div>
 </div>
 
-<!-- SCRIPT LIBRARY -->
-<div class="content" id="scriptlibrary">
-<h1>Script Library</h1>
-<p style="margin-bottom:20px;">Shared scripts by developers. Click copy to copy the script to your clipboard!</p>
 
-<div id="scriptFormBox" style="display:none;">
-<h3>Post a Script</h3>
-<input id="scriptName" placeholder="Script Name" style="max-width:300px;">
-<textarea id="scriptCode" placeholder="Paste your script here..."></textarea>
-<button class="btn" onclick="postScript()">Post Script</button>
-<div id="scriptMsg" class="msg"></div>
-</div>
 
-<div id="scriptDevOnly" style="background:rgba(122,255,210,0.1); padding:20px; border-radius:12px; border:1px solid rgba(122,255,210,0.3); margin-bottom:20px; display:none;">
-<p style="color:#7fffd4;">📝 Dev-only feature. Login as a developer to post scripts.</p>
-</div>
 
-<h3>Available Scripts</h3>
-<div id="scriptsList" class="script-grid"></div>
-</div>
-
-<!-- GAMES -->
-<div class="content" id="games">
-<h1>Games</h1>
-<p style="margin-bottom:20px;">Roblox games shared by developers. Click the link to visit the game!</p>
-
-<div id="gameFormBox" style="display:none;">
-<h3>Post a Game</h3>
-<input id="gameName" placeholder="Game Name" style="max-width:300px;">
-<input id="gameLink" placeholder="Roblox Game Link (https://www.roblox.com/games/...)" style="max-width:300px;">
-<button class="btn" onclick="postGame()">Post Game</button>
-<div id="gameMsg" class="msg"></div>
-</div>
-
-<div id="gameDevOnly" style="background:rgba(122,255,210,0.1); padding:20px; border-radius:12px; border:1px solid rgba(122,255,210,0.3); margin-bottom:20px; display:none;">
-<p style="color:#7fffd4;">🎮 Dev-only feature. Login as a developer to post games.</p>
-</div>
-
-<h3>Available Games</h3>
-<div id="gamesList" class="games-grid"></div>
-</div>
 
 <!-- FAQ -->
 <div class="content" id="faq">
@@ -551,9 +511,9 @@ h3 {margin-bottom:15px;}
 
 <!-- DASHBOARD -->
 <div class="content" id="dashboard">
-<h1>Dashboard</h1>
 
 <div id="mainMenu">
+<h1>Dashboard</h1>
 <h3>Choose an option:</h3>
 <button class="btn" onclick="showCreateAccount()">Create Account</button>
 <button class="btn" onclick="showLogin()">Login</button>
@@ -609,13 +569,62 @@ h3 {margin-bottom:15px;}
 </div>
 
 <div id="userBox" style="display:none;">
-<div style="background:rgba(122,255,210,0.1); padding:20px; border-radius:12px; border:1px solid rgba(122,255,210,0.3);">
+<div style="background:rgba(122,255,210,0.1); padding:20px; border-radius:12px; border:1px solid rgba(122,255,210,0.3); margin-bottom:20px;">
 <h2 id="userWelcome"></h2>
 <p style="margin:10px 0; opacity:0.9;">You are logged in.</p>
 <button class="btn danger" onclick="logoutFunc()">Logout</button>
 </div>
+
+<div style="display:flex; gap:10px;">
+<button class="btn" onclick="showDashTab('scriptlibrary')">Script Library</button>
+<button class="btn" onclick="showDashTab('games')">Games</button>
 </div>
 
+<!-- SCRIPT LIBRARY TAB -->
+<div id="scriptlibrary" style="display:none; margin-top:20px;">
+<h3>Script Library</h3>
+<button class="btn secondary" onclick="showDashTab('menu')" style="margin-bottom:20px;">← Back</button>
+<p style="margin-bottom:20px;">Shared scripts by developers. Click copy to copy the script to your clipboard!</p>
+
+<div id="scriptFormBox" style="display:none; margin-bottom:20px;">
+<h4>Post a Script</h4>
+<input id="scriptName" placeholder="Script Name" style="max-width:300px;">
+<textarea id="scriptCode" placeholder="Paste your script here..."></textarea>
+<button class="btn" onclick="postScript()">Post Script</button>
+<div id="scriptMsg" class="msg"></div>
+</div>
+
+<div id="scriptDevOnly" style="background:rgba(122,255,210,0.1); padding:20px; border-radius:12px; border:1px solid rgba(122,255,210,0.3); margin-bottom:20px; display:none;">
+<p style="color:#7fffd4;">📝 Dev-only feature. You need to be a developer to post scripts.</p>
+</div>
+
+<h4>Available Scripts</h4>
+<div id="scriptsList" class="script-grid"></div>
+</div>
+
+<!-- GAMES TAB -->
+<div id="games" style="display:none; margin-top:20px;">
+<h3>Games</h3>
+<button class="btn secondary" onclick="showDashTab('menu')" style="margin-bottom:20px;">← Back</button>
+<p style="margin-bottom:20px;">Roblox games shared by developers. Click the link to visit the game!</p>
+
+<div id="gameFormBox" style="display:none; margin-bottom:20px;">
+<h4>Post a Game</h4>
+<input id="gameName" placeholder="Game Name" style="max-width:300px;">
+<input id="gameLink" placeholder="Roblox Game Link (https://www.roblox.com/games/...)" style="max-width:300px;">
+<button class="btn" onclick="postGame()">Post Game</button>
+<div id="gameMsg" class="msg"></div>
+</div>
+
+<div id="gameDevOnly" style="background:rgba(122,255,210,0.1); padding:20px; border-radius:12px; border:1px solid rgba(122,255,210,0.3); margin-bottom:20px; display:none;">
+<p style="color:#7fffd4;">🎮 Dev-only feature. You need to be a developer to post games.</p>
+</div>
+
+<h4>Available Games</h4>
+<div id="gamesList" class="games-grid"></div>
+</div>
+
+</div>
 </div>
 
 <!-- DEV PANEL -->
@@ -805,7 +814,25 @@ function showUserPanel() {
     
     if (isDev === 'true') {
         document.getElementById('devPanelTab').style.display = 'inline-block';
+        document.getElementById('scriptFormBox').style.display = 'block';
+        document.getElementById('scriptDevOnly').style.display = 'none';
+        document.getElementById('gameFormBox').style.display = 'block';
+        document.getElementById('gameDevOnly').style.display = 'none';
+    } else {
+        document.getElementById('scriptFormBox').style.display = 'none';
+        document.getElementById('scriptDevOnly').style.display = 'block';
+        document.getElementById('gameFormBox').style.display = 'none';
+        document.getElementById('gameDevOnly').style.display = 'block';
     }
+    
+    loadScripts();
+    loadGames();
+}
+
+function showDashboardTab(tabName) {
+    document.getElementById('scriptlibrary').style.display = 'none';
+    document.getElementById('games').style.display = 'none';
+    document.getElementById(tabName).style.display = 'block';
 }
 
 async function loadAccounts() {
@@ -858,12 +885,18 @@ async function delAccount(user) {
 function logoutFunc() {
     localStorage.clear();
     document.getElementById('devPanelTab').style.display = 'none';
+    document.getElementById('scriptFormBox').style.display = 'none';
+    document.getElementById('scriptDevOnly').style.display = 'none';
+    document.getElementById('gameFormBox').style.display = 'none';
+    document.getElementById('gameDevOnly').style.display = 'none';
     document.getElementById('mainMenu').style.display = 'block';
     document.getElementById('createBox').style.display = 'none';
     document.getElementById('loginBox').style.display = 'none';
     document.getElementById('devBox').style.display = 'none';
     document.getElementById('tosBox').style.display = 'none';
     document.getElementById('userBox').style.display = 'none';
+    document.getElementById('scriptlibrary').style.display = 'none';
+    document.getElementById('games').style.display = 'none';
     document.getElementById('devLoginBtn').style.display = 'none';
     document.getElementById('devUser').disabled = false;
 }
