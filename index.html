@@ -935,6 +935,8 @@ function postScript() {
 
 function loadScripts() {
     const list = document.getElementById('scriptsList');
+    if (!list) return;
+    
     if (scripts.length === 0) {
         list.innerHTML = '<p style="opacity:0.8; grid-column:1/-1;">No scripts yet. Be the first to post!</p>';
         return;
@@ -942,7 +944,7 @@ function loadScripts() {
     
     let html = '';
     scripts.forEach(s => {
-        const preview = s.code.substring(0, 150) + (s.code.length > 150 ? '...' : '');
+        const preview = s.code.substring(0, 150).replace(/</g, '&lt;').replace(/>/g, '&gt;') + (s.code.length > 150 ? '...' : '');
         html += `
             <div class="script-card">
                 <h3>${s.name}</h3>
@@ -995,6 +997,8 @@ function postGame() {
 
 function loadGames() {
     const list = document.getElementById('gamesList');
+    if (!list) return;
+    
     if (games.length === 0) {
         list.innerHTML = '<p style="opacity:0.8; grid-column:1/-1;">No games yet. Be the first to post!</p>';
         return;
