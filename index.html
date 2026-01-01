@@ -570,7 +570,7 @@ h3 {margin-bottom:15px;}
 <input id="loginUser" placeholder="Username">
 <input id="loginPass" placeholder="Password" type="password">
 <button class="btn" onclick="doLogin()">Login</button>
-<button class="btn secondary" onclick="backMenu()">Back</button>
+<button class="btn secondary" onclick="backMenuToDash()">Back to Dashboard</button>
 <div id="loginMsg" class="msg"></div>
 </div>
 
@@ -683,13 +683,10 @@ window.addEventListener('load', () => {
     const isDev = localStorage.getItem('isDev');
     if (user) {
         showTab('dashboard');
-        showUserPanel();
-        if (isDev === 'true') {
-            document.getElementById('devPanelTab').style.display = 'inline-block';
-        }
+        setTimeout(() => {
+            showUserPanel();
+        }, 100);
     }
-    loadScripts();
-    loadGames();
 });
 
 document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -731,6 +728,11 @@ function backMenu() {
     document.getElementById('userBox').style.display = 'none';
     document.getElementById('devLoginBtn').style.display = 'none';
     document.getElementById('devUser').disabled = false;
+}
+
+function backMenuToDash() {
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('mainMenu').style.display = 'block';
 }
 
 function msg(elementId, text, type) {
